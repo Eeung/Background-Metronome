@@ -4,7 +4,7 @@ import java.io.*;
 
 import javax.sound.sampled.*;
 
-public class Beat /*implements LineListener*/{
+public class Beat /*implements LineListener*/{//
 	String filePath = ".//audio//Tock.wav";
 	private Clip clip;
 	Beat() {
