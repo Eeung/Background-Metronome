@@ -41,6 +41,7 @@ public class Window extends JFrame {
 			
 			thread.start();
 			isPlayed = true;
+			startMilisec = System.currentTimeMillis();
 		} );
 		play.setBounds(5, 5, 100, 40);
 		add(play);
@@ -127,16 +128,21 @@ public class Window extends JFrame {
 				if(isFocused() && e.isShiftPressed())
 					offsetScale = 100;
 				
-				if(!isPlayed && e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_RETURN) {
-					play.doClick();
-					startMilisec = System.currentTimeMillis();
+				if(isPlayed) {
+					if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_OEM_5) {
+						long cur = System.currentTimeMillis();
+						offset.setText(Long.toString(cur-startMilisec));
+						offsetSetUp();
+					}
+					if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_F5) {
+						stop.doClick();
+						play.doClick();
+					}
+				} else {
+					if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_RETURN)
+						play.doClick();
 				}
 				
-				if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_OEM_5) {
-					long cur = System.currentTimeMillis();
-					offset.setText(Long.toString(cur-startMilisec));
-					offsetSetUp();
-				}
 			}
 			
 			@Override 
