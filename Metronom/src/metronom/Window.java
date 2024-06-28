@@ -1,5 +1,8 @@
 package metronom;
 
+import java.awt.Point;
+import java.awt.Rectangle;
+
 import javax.swing.*;
 
 import lc.kra.system.keyboard.GlobalKeyboardHook;
@@ -7,18 +10,23 @@ import lc.kra.system.keyboard.event.GlobalKeyAdapter;
 import lc.kra.system.keyboard.event.GlobalKeyEvent;
 import metronom.component.Button;
 import metronom.component.Slider;
+import metronom.component.Text;
 import metronom.component.TextInput;
 
 public class Window extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	Button play, stop;
-	TextInput bpmInput, offsetInput;
+	Button offsetUp, offsetDown, offsetMoreUp, offsetMoreDown;
+	TextInput bpmInput;
+	Text offset;
 	Slider bpmSlider, volumeSlider;
 	SoundPlayer thread = new SoundPlayer();
 	GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
 	
 	private boolean isPlayed = false;
+	private int offsetScale = 1;
+	private long startMilisec = 0;
 	public Window() {
 		setTitle("매트로놈");
 		setSize(640,480);
@@ -49,7 +57,6 @@ public class Window extends JFrame {
 		add(stop);
 		
 		bpmInput = new TextInput(() -> {
-			System.out.println("bpm!");
 			double bpm = bpmSetUp();
 			bpmSlider.setValue(bpm);
 		} );
@@ -57,14 +64,38 @@ public class Window extends JFrame {
 		bpmInput.setText("120");
 		add(bpmInput);
 		
-		offsetInput = new TextInput(() -> {
-			System.out.println("offset!");
+		offsetMoreDown = new Button("◀◀", () -> {
+			offset.setText( Integer.toString(OffsetActions.offsetDown(Integer.parseInt(offset.getText()) , 10 * offsetScale)));
 			offsetSetUp();
-		} );
-		offsetInput.setBounds(155,40,100,30);
-		offsetInput.setText("0");
-		add(offsetInput);
-	
+		});
+		offsetMoreDown.setBounds(new Rectangle(new Point(155,40), Button.offsetButton));
+		add(offsetMoreDown);
+		
+		offsetDown = new Button("◀", () -> {
+			offset.setText( Integer.toString(OffsetActions.offsetDown(Integer.parseInt(offset.getText()) , 1 * offsetScale)));
+			offsetSetUp();
+		});
+		offsetDown.setBounds(new Rectangle(new Point(195,40), Button.offsetButton));
+		add(offsetDown);
+		
+		offset = new Text("0");
+		offset.setBounds(235,40,60,30);
+		add(offset);
+		
+		offsetUp = new Button("▶", () -> {
+			offset.setText( Integer.toString(OffsetActions.offsetUp(Integer.parseInt(offset.getText()) , 1 * offsetScale)));
+			offsetSetUp();
+		});
+		offsetUp.setBounds(new Rectangle(new Point(295,40), Button.offsetButton));
+		add(offsetUp);
+		
+		offsetMoreUp = new Button("▶▶", () -> {
+			offset.setText( Integer.toString(OffsetActions.offsetUp(Integer.parseInt(offset.getText()) , 10 * offsetScale)));
+			offsetSetUp();
+		});
+		offsetMoreUp.setBounds(new Rectangle(new Point(335,40), Button.offsetButton));
+		add(offsetMoreUp);
+		
 		bpmSlider = new Slider(30,480,120);
 		bpmSlider.setAction(() -> {
 			int bpm = bpmSlider.getValue();
@@ -93,14 +124,27 @@ public class Window extends JFrame {
 			@Override 
 			public void keyPressed(GlobalKeyEvent e) {
 				//System.out.println(e);
-				if(!isPlayed && e.isShiftPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_RETURN) {
+				if(isFocused() && e.isShiftPressed())
+					offsetScale = 100;
+				
+				if(!isPlayed && e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_RETURN) {
 					play.doClick();
+					startMilisec = System.currentTimeMillis();
+				}
+				
+				if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_OEM_5) {
+					long cur = System.currentTimeMillis();
+					offset.setText(Long.toString(cur-startMilisec));
+					offsetSetUp();
 				}
 			}
 			
 			@Override 
 			public void keyReleased(GlobalKeyEvent e) {
 				//System.out.println(e);
+				if(isFocused() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_LSHIFT)
+					offsetScale = 1;
+				
 				if(isPlayed && e.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {
 					stop.doClick();
 				}
@@ -121,10 +165,8 @@ public class Window extends JFrame {
 		return bpm;
 	}
 	private int offsetSetUp() {
-		offsetInput.checkNum("0", TextInput.INTEGER);
-		offsetInput.checkRange(-50000, Integer.MAX_VALUE);
-		int offset = Integer.parseInt(offsetInput.getText());
-		thread.setOffset(offset);
-		return offset;
+		int off = Integer.parseInt(offset.getText());
+		thread.setOffset(off);
+		return off;
 	}
 }
