@@ -8,7 +8,7 @@ import javax.swing.event.ChangeListener;
 public class Slider extends JSlider implements ChangeListener {
 	private static final long serialVersionUID = 1L;
 
-	private Action action;
+	private Action action = () -> {};
 	public boolean isMoved = true;
 	public Slider(int min, int max, int value) {
 		setModel(new DefaultBoundedRangeModel(value, 0, min, max));
