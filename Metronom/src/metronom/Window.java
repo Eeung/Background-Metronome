@@ -24,10 +24,13 @@ public class Window extends JFrame {
 		setSize(640,480);
 		
 		play = new Button("재생", () -> {
+			
 			play.setEnabled(false);
 			stop.setEnabled(true);
+			
 			bpmSetUp();
 			offsetSetUp();
+			
 			thread.start();
 			isPlayed = true;
 		} );
@@ -37,7 +40,7 @@ public class Window extends JFrame {
 		stop = new Button("일시정지", () -> {
 			play.setEnabled(true);
 			stop.setEnabled(false);
-			thread.interrupt();
+			thread.scheduleCancel();
 			thread = new SoundPlayer();
 			isPlayed = false;
 		} );
@@ -46,20 +49,23 @@ public class Window extends JFrame {
 		add(stop);
 		
 		bpmInput = new TextInput(() -> {
+			System.out.println("bpm!");
 			double bpm = bpmSetUp();
 			bpmSlider.setValue(bpm);
 		} );
 		bpmInput.setBounds(155,5,100,30);
 		bpmInput.setText("120");
 		add(bpmInput);
+		
 		offsetInput = new TextInput(() -> {
+			System.out.println("offset!");
 			offsetSetUp();
 		} );
 		offsetInput.setBounds(155,40,100,30);
 		offsetInput.setText("0");
 		add(offsetInput);
 	
-		bpmSlider = new Slider(0,480,120);
+		bpmSlider = new Slider(30,480,120);
 		bpmSlider.setAction(() -> {
 			int bpm = bpmSlider.getValue();
 			if(bpmSlider.isMoved) {
@@ -69,7 +75,7 @@ public class Window extends JFrame {
 			bpmSlider.isMoved = true;
 		} );
 		bpmSlider.setBounds(5, 100,500,50);
-		bpmSlider.setTickSpacing(60, 30);
+		bpmSlider.setTickSpacing(30, 15);
 		add(bpmSlider);
 		
 		volumeSlider = new Slider(0,100,100);

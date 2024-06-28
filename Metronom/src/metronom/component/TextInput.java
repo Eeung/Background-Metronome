@@ -1,24 +1,27 @@
 package metronom.component;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JTextField;
 
-public class TextInput extends JTextField implements ActionListener {
+public class TextInput extends JTextField implements KeyListener {
 	private static final long serialVersionUID = 1751069614495516875L;
 	
 	private Action action;
 	public static final String DOUBLE = "(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*)(?:[Ee]([+-]?\\d+))?";
 	public static final String INTEGER = "^[+|-]?\\d+";
+	
 	public TextInput(Action func){
-		addActionListener(this);
+		addKeyListener(this);
 		action = func;
 	}
+	
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void keyPressed(KeyEvent e) {
 		action.act();
 	}
+	
 	public void checkNum(String change, String Type) {
 		String text = this.getText();
 		if(!text.matches(Type)) {
@@ -31,4 +34,9 @@ public class TextInput extends JTextField implements ActionListener {
 		if(input<min) setText(Integer.toString(min));
 		else if (input>max) setText(Integer.toString(max));
 	}
+	
+	@Override
+	public void keyTyped(KeyEvent e) {}
+	@Override
+	public void keyReleased(KeyEvent e) {}
 }
