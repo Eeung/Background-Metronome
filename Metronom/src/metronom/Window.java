@@ -9,6 +9,7 @@ import lc.kra.system.keyboard.GlobalKeyboardHook;
 import lc.kra.system.keyboard.event.GlobalKeyAdapter;
 import lc.kra.system.keyboard.event.GlobalKeyEvent;
 import metronom.component.Button;
+import metronom.component.Radios;
 import metronom.component.Slider;
 import metronom.component.Text;
 import metronom.component.TextInput;
@@ -20,9 +21,11 @@ public class Window extends JFrame {
 	Button offsetUp, offsetDown, offsetMoreUp, offsetMoreDown;
 	TextInput bpmInput;
 	Text offset;
+	Radios radio;
 	Slider bpmSlider, volumeSlider;
-	SoundPlayer thread = new SoundPlayer();
 	GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
+	
+	SoundPlayer player = new SoundPlayer(4);
 	
 	private boolean isPlayed = false;
 	private int offsetScale = 1;
@@ -32,14 +35,16 @@ public class Window extends JFrame {
 		setSize(640,480);
 		
 		play = new Button("재생", () -> {
-			
 			play.setEnabled(false);
 			stop.setEnabled(true);
+			
+			int bit = Integer.parseInt(radio.getSelected().getText());
+			player.setBit(bit);
 			
 			bpmSetUp();
 			offsetSetUp();
 			
-			thread.start();
+			player.start();
 			isPlayed = true;
 			startMilisec = System.currentTimeMillis();
 		} );
@@ -49,8 +54,8 @@ public class Window extends JFrame {
 		stop = new Button("일시정지", () -> {
 			play.setEnabled(true);
 			stop.setEnabled(false);
-			thread.scheduleCancel();
-			thread = new SoundPlayer();
+			player.scheduleCancel();
+			player = new SoundPlayer(4);
 			isPlayed = false;
 		} );
 		stop.setEnabled(false);
@@ -102,7 +107,7 @@ public class Window extends JFrame {
 			int bpm = bpmSlider.getValue();
 			if(bpmSlider.isMoved) {
 				bpmInput.setText(Integer.toString(bpm));
-				thread.setBpm(bpm);
+				player.setBpm(bpm);
 			}
 			bpmSlider.isMoved = true;
 		} );
@@ -113,12 +118,20 @@ public class Window extends JFrame {
 		volumeSlider = new Slider(0,100,100);
 		volumeSlider.setAction(() -> {
 			int volume = volumeSlider.getValue();
-			thread.setVolume(volume);
+			player.setVolume(volume);
 		} );
 		volumeSlider.setBounds(5, 160, 50, 200);
 		volumeSlider.setOrientation(SwingConstants.VERTICAL);
 		volumeSlider.setTickSpacing(25, 5);
 		add(volumeSlider);
+		
+		radio = new Radios("4","6","8","12","16","24");
+		JRadioButton[] buttons = radio.getRButtons();
+		for(int i=0;i<buttons.length;i++) {
+			JRadioButton bt = buttons[i];
+			bt.setBounds(75+(i*55), 160, 50, 30);
+			add(bt);
+		}
 		
 		keyboardHook.addKeyListener(new GlobalKeyAdapter() {
 			
@@ -167,12 +180,12 @@ public class Window extends JFrame {
 		bpmInput.checkNum("120", TextInput.DOUBLE);
 		bpmInput.checkRange(1, Integer.MAX_VALUE);
 		double bpm = Double.parseDouble(bpmInput.getText());
-		thread.setBpm(bpm);
+		player.setBpm(bpm);
 		return bpm;
 	}
 	private int offsetSetUp() {
 		int off = Integer.parseInt(offset.getText());
-		thread.setOffset(off);
+		player.setOffset(off);
 		return off;
 	}
 }

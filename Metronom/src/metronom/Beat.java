@@ -1,49 +1,35 @@
 package metronom;
 
-import java.io.*;
+import java.net.URISyntaxException;
 
-import javax.sound.sampled.*;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
-public class Beat /*implements LineListener*/{
-	private String filePath = ".//audio//Tock.wav";
-	private FloatControl control;
-	private Clip clip;
+public class Beat{
+	@SuppressWarnings("unused")
+	private String filePath = ".\\resources\\audio\\Tock.wav";
+	private MediaPlayer player;
 	Beat() {
 		try {
-			FileInputStream fileInputStream = new FileInputStream(filePath);
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-            clip = AudioSystem.getClip();
-			AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedInputStream);
-			//clip.addLineListener(this);
-			clip.open(audioStream);
-			control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-			setVolume(100);
-		}catch (Exception e) {
+			new JFXPanel(); //이게 없으면 IllegalStateException 예외가 발생함
+			
+			String uriString = getClass().getResource("/audio/Tock.wav").toURI().toString();
+			player = new MediaPlayer( new Media(uriString) );
+		}catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void play() {
-		clip.stop();
-		clip.setFramePosition(0);
-		clip.start();
-	}
-	
-	public void stop() {
-		clip.stop();
+		player.stop();
+		player.setStartTime(Duration.ZERO);
+		player.play();
 	}
 	
 	public void setVolume(int vol) {
-		Double cur = 20*Math.log(vol / 100.0 + 0.01);
-		float db = cur<-80 ? -80 : cur.floatValue();
-		control.setValue(db);
+		double volume = (double)vol / 100;
+		player.setVolume(volume);
 	}
-	/*@Override
-	public void update(LineEvent event) {
-		if (LineEvent.Type.START == event.getType()) {
-            System.out.println("Playback started.");
-        } else if (LineEvent.Type.STOP == event.getType()) {
-            System.out.println("Playback completed.");
-        }
-	}*/
 }

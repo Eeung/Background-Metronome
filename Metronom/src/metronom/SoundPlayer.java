@@ -8,31 +8,44 @@ import java.util.concurrent.TimeUnit;
 public class SoundPlayer extends Thread {
 	private double bpm=-1;
 	private int pre_offset = Integer.MIN_VALUE, offset = 0;
+	private int bit;
 	private Beat beat;
+	
 	private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledFuture<?> scheduledFuture = null;
-	public SoundPlayer() {
+	public SoundPlayer(int b) {
+		//executorService = Executors.newScheduledThreadPool((int)(bpm/30*bit/2));
 		beat = new Beat();
+		bit = b;
 	}
 	@Override
 	public void run() {
 		if(bpm<0) return;
 		
-		long nanoPeriod = (long) (60_000_000_000L/bpm);
-		
-		scheduledFuture = executorService.scheduleAtFixedRate(()->{
-			beat.play();
-		}, offset*1_000_000L, nanoPeriod, TimeUnit.NANOSECONDS);
+		long nanoPeriod = (long) (60_000_000_000L/(bpm*bit/4));
+		Run task = new Run(beat);
+		scheduledFuture = executorService.scheduleAtFixedRate(task, offset*1_000_000L, nanoPeriod, TimeUnit.NANOSECONDS);
 		
 		pre_offset = offset;
 		offset = 0;
 	}
-	
 	public void scheduleCancel() {
 		scheduledFuture.cancel(true);
 		scheduledFuture = null;
 		pre_offset = Integer.MIN_VALUE;
 		System.out.println("종료 됨!");
+	}
+	
+	private void scheduleRestart() {
+		long nanoPeriod = (long) (60_000_000_000L/(bpm*bit/4));	//바뀐 bpm에 따라 간격 구하기
+		
+		Long remainDelay = scheduledFuture.getDelay(TimeUnit.NANOSECONDS);	//다음 비트가 재생될 때까지 남은 딜레이 가져오기
+		Long nanoOff = offset*1_000_000L;
+		remainDelay = remainDelay + nanoOff < 0 ? 0 : remainDelay + nanoOff; //오프셋만큼 밀기 (만약, 오프셋이 음수일 때, 남은 딜레이보다 절댓값이 크면 0으로 고정)
+		
+		scheduledFuture.cancel(true);	//스케쥴 중지
+		//바뀐 정보대로 스케쥴 재시작
+		scheduledFuture = executorService.scheduleAtFixedRate(new Run(beat), remainDelay, nanoPeriod, TimeUnit.NANOSECONDS);
 	}
 	
 	public void setBpm(double bpm) {
@@ -58,14 +71,7 @@ public class SoundPlayer extends Thread {
 		beat.setVolume(vol);
 	}
 	
-	private void scheduleRestart() {
-		long nanoPeriod = (long) (60_000_000_000L/bpm);	//바뀐 bpm에 따라 간격 구하기
-		Long remainDelay = scheduledFuture.getDelay(TimeUnit.NANOSECONDS);	//다음 비트가 재생될 때까지 남은 딜레이 가져오기
-		Long nanoOff = offset*1_000_000L;
-		remainDelay = remainDelay < -1*nanoOff ? 0 : remainDelay + nanoOff; //오프셋만큼 밀기 (만약, 오프셋이 음수일 때, 남은 딜레이보다 절댓값이 크면 0으로 고정)
-		scheduledFuture.cancel(true);	//스케쥴 중지
-		scheduledFuture = executorService.scheduleAtFixedRate(()->{	//바뀐 정보대로 스케쥴 재시작
-			beat.play();
-		}, remainDelay, nanoPeriod, TimeUnit.NANOSECONDS);
+	public void setBit(int b) {
+		bit = b;
 	}
 }
