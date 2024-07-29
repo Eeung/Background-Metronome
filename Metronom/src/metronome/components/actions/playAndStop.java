@@ -40,6 +40,7 @@ class play implements EventHandler<ActionEvent>{
 		
 		player.start();
 		root.setPlayed(true);
+		root.setStartTime( System.currentTimeMillis() );
 	}
 	
 	//Singleton Pattern

@@ -25,14 +25,6 @@ import metronome.components.actions.playAndStop;
 public class Controller implements Initializable {
 	private static Controller instance;
 	
-	private Stage stage;
-	boolean isFocused = false;
-	
-	private SoundPlayer player ;
-	private boolean isPlayed = false;
-	
-	GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
-	
 	@FXML
 	private BorderPane mediaControlPane;
 	@FXML
@@ -92,6 +84,15 @@ public class Controller implements Initializable {
 	
 	Button[] bpmButtons;
 	Button[] offsetButtons;
+	
+	private Stage stage;
+	boolean isFocused = false;
+	
+	private SoundPlayer player ;
+	private boolean isPlayed = false;
+	private long startTime;
+	
+	GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
 	boolean[] keyPressed = new boolean[255];
 	
 	@Override
@@ -135,9 +136,10 @@ public class Controller implements Initializable {
 			
 			@Override 
 			public void keyPressed(GlobalKeyEvent e) {
+				//System.out.println(e);
 				if(keyPressed[e.getVirtualKeyCode()]) return;
-				if(isFocused && e.isShiftPressed()) {
-					keyPressed[e.getVirtualKeyCode()] = true;
+				
+				if(isFocused && e.isShiftPressed()) {	//shift
 					for (int i=0;i<4;i++) {
 						final int idx = i;
 						Platform.runLater(() -> bpmButtons[idx].setText(bpmSetting.IncreaseStepSize(bpmButtons[idx])) );
@@ -147,13 +149,30 @@ public class Controller implements Initializable {
 						});
 					}
 				}
+				
+				if(isPlayed) {
+					if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_OEM_5) {	// ctrl + \
+						long current = System.currentTimeMillis();
+						Platform.runLater(() -> offsetText.setText(Long.toString(current-startTime)) );
+						player.setOffset( (int)(current-startTime) );
+					}
+					if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {	// esc
+						stopSound.fire();
+					}
+				} else {
+					if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_RETURN) {	// ctrl + enter
+						playSound.fire();
+					}
+				}
+				
+				keyPressed[e.getVirtualKeyCode()] = true;
 			}
 			
 			@Override 
 			public void keyReleased(GlobalKeyEvent e) {
 				//쉬프트 땠을 때, 원상태로 복귀 코드 입력
 				if(isFocused && e.getVirtualKeyCode() == GlobalKeyEvent.VK_LSHIFT) {
-					keyPressed[e.getVirtualKeyCode()] = false;
+					
 					for (int i=0;i<4;i++) {
 						final int idx = i;
 						Platform.runLater(() -> bpmButtons[idx].setText(bpmSetting.DecreaseStepSize(bpmButtons[idx])) );
@@ -163,6 +182,8 @@ public class Controller implements Initializable {
 						});
 					}
 				}
+				
+				keyPressed[e.getVirtualKeyCode()] = false;
 			}
 			
 		});
@@ -304,6 +325,11 @@ public class Controller implements Initializable {
 	public void setPlayed(boolean isPlayed) {
 		this.isPlayed = isPlayed;
 	}
+	
+	public void setStartTime(long miliSec) {
+		startTime = miliSec;
+	}
+	
 	public Circle[] getBeatIndicator() {
 		return new Circle[] {beat_0,beat_1,beat_2,beat_3};
 	}
