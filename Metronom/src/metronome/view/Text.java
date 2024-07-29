@@ -1,4 +1,4 @@
-package metronom.component;
+package metronome.view;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;

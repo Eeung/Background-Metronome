@@ -1,4 +1,4 @@
-package metronom.component;
+package metronome.view;
 
 import java.awt.Color;
 import java.awt.Dimension;

@@ -1,4 +1,4 @@
-package metronom.component;
+package metronome.view;
 
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JSlider;

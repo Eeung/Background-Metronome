@@ -1,4 +1,4 @@
-package metronom.component;
+package metronome.view;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -29,10 +29,9 @@ public class TextInput extends JTextField implements KeyListener {
 			return;
 		}
 	}
-	public void checkRange(int min, int max){
-		double input = Double.parseDouble(getText());
-		if(input<min) setText(Integer.toString(min));
-		else if (input>max) setText(Integer.toString(max));
+	public void checkRange(double num,int min, int max){
+		if(num<min) setText(Integer.toString(min));
+		else if (num>max) setText(Integer.toString(max));
 	}
 	
 	@Override

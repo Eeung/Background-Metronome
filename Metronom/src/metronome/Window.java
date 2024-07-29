@@ -1,4 +1,4 @@
-package metronom;
+package metronome;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -8,11 +8,11 @@ import javax.swing.*;
 import lc.kra.system.keyboard.GlobalKeyboardHook;
 import lc.kra.system.keyboard.event.GlobalKeyAdapter;
 import lc.kra.system.keyboard.event.GlobalKeyEvent;
-import metronom.component.Button;
-import metronom.component.Radios;
-import metronom.component.Slider;
-import metronom.component.Text;
-import metronom.component.TextInput;
+import metronome.view.Button;
+import metronome.view.Radios;
+import metronome.view.Slider;
+import metronome.view.Text;
+import metronome.view.TextInput;
 
 public class Window extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -178,7 +178,8 @@ public class Window extends JFrame {
 	
 	private double bpmSetUp() {
 		bpmInput.checkNum("120", TextInput.DOUBLE);
-		bpmInput.checkRange(1, Integer.MAX_VALUE);
+		int bit = Integer.parseInt(radio.getSelected().getText());
+		bpmInput.checkRange(Double.parseDouble(bpmInput.getText()) * ((double)bit/4),1, 1000);
 		double bpm = Double.parseDouble(bpmInput.getText());
 		player.setBpm(bpm);
 		return bpm;

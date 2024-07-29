@@ -1,4 +1,4 @@
-package metronom;
+package metronome;
 
 public class OffsetActions {
 	static int Min = 0;
