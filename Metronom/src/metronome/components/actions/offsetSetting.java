@@ -18,7 +18,13 @@ public class offsetSetting {
 	public static final int MorerIncrease = 100;
 	public static final int MorestIncrease = 1000;
 	
-	public static offsetChange getoffsetChange(int mode) {
+	private static final Controller root = Controller.getInstance();
+	
+	private static Label offsetText = root.getOffsetText();
+	private static SoundPlayer player;
+	private static int step;
+	
+	public static offsetChange getButtonEvent(int mode) {
 		offsetChange a = new offsetChange(mode);
 		return a;
 	}
@@ -39,52 +45,47 @@ public class offsetSetting {
 		if (num>0) sb.insert(0, '+');
 		return sb.toString();
 	}
-}
-
-class offsetChange implements EventHandler<MouseEvent>{
-	private final Controller root = Controller.getInstance();
 	
-	private Label offsetText = root.getOffsetText();
-	private Button offsetChange;
-	private SoundPlayer player = root.getPlayer();
-	private int step;
-	
-	public offsetChange(int mode) {
-		step = mode;
-		switch(mode) {
-		case offsetSetting.NormalDecrease -> offsetChange = root.getBpmDecrease();
-		case offsetSetting.MoreDecrease -> offsetChange = root.getBpmMoreDecrease();
-		case offsetSetting.NormalIncrease -> offsetChange = root.getBpmIncrease();
-		case offsetSetting.MoreIncrease -> offsetChange = root.getBpmMoreIncrease();
-		case offsetSetting.MorerDecrease -> offsetChange = root.getBpmDecrease();
-		case offsetSetting.MorestDecrease -> offsetChange = root.getBpmMoreDecrease();
-		case offsetSetting.MorerIncrease -> offsetChange = root.getBpmIncrease();
-		case offsetSetting.MorestIncrease -> offsetChange = root.getBpmMoreIncrease();
+	private static class offsetChange implements EventHandler<MouseEvent>{
+		private Button offsetChange;
+		
+		public offsetChange(int mode) {
+			step = mode;
+			switch(mode) {
+			case NormalDecrease -> offsetChange = root.getBpmDecrease();
+			case MoreDecrease -> offsetChange = root.getBpmMoreDecrease();
+			case NormalIncrease -> offsetChange = root.getBpmIncrease();
+			case MoreIncrease -> offsetChange = root.getBpmMoreIncrease();
+			
+			case MorerDecrease -> offsetChange = root.getBpmDecrease();
+			case MorestDecrease -> offsetChange = root.getBpmMoreDecrease();
+			case MorerIncrease -> offsetChange = root.getBpmIncrease();
+			case MorestIncrease -> offsetChange = root.getBpmMoreIncrease();
+			}
 		}
-	}
-	
-	@Override
-	public void handle(MouseEvent arg0) {
-		if(offsetChange == null) return;
-		int offset = Integer.parseInt( offsetText.getText() );
-		int weight = step;
 		
-		offset += weight;
-		offset = rangeCheck(offset, 0, Integer.MAX_VALUE);
+		@Override
+		public void handle(MouseEvent arg0) {
+			if(offsetChange == null) return;
+			player = root.getPlayer();
+			
+			int offset = Integer.parseInt( offsetText.getText() );
+			int weight = step;
+			
+			offset += weight;
+			offset = rangeCheck(offset, 0, Integer.MAX_VALUE);
+			
+			final int result = offset;
+			
+			Platform.runLater(() -> offsetText.setText( Integer.toString(result) ) );
+			player.setOffset(offset);
+		}
 		
-		final int result = offset;
+		private int rangeCheck(int target, int min, int max) {
+			target = target<min ? min : target;
+			target = target>max ? max : target;
+			return target;
+		}
 		
-		Platform.runLater(() -> offsetText.setText( Integer.toString(result) ) );
-		player.setOffset(offset);
-	}
-	
-	private int rangeCheck(int target, int min, int max) {
-		target = target<min ? min : target;
-		target = target>max ? max : target;
-		return target;
-	}
-	
-	public void setStep(String s) {
-		step = Integer.parseInt(s);
 	}
 }

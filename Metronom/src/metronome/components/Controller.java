@@ -18,6 +18,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import metronome.SoundPlayer;
+import metronome.components.actions.VolumeSetting;
 import metronome.components.actions.bpmSetting;
 import metronome.components.actions.offsetSetting;
 import metronome.components.actions.playAndStop;
@@ -114,23 +115,24 @@ public class Controller implements Initializable {
 			sb.append(str.substring(1));
 		}
 		bpmText.setText( sb.toString() );
-		
 		playSound.setOnAction( playAndStop.getPlay() );
 		stopSound.setOnAction( playAndStop.getStop() );
 		
-		bpmLessDecrease.setOnMouseClicked( bpmSetting.getBpmChange(bpmSetting.LessDecrease) );
-		bpmDecrease.setOnMouseClicked( bpmSetting.getBpmChange(bpmSetting.NormalDecrease) );
-		bpmMoreDecrease.setOnMouseClicked( bpmSetting.getBpmChange(bpmSetting.MoreDecrease) );
-		bpmLessIncrease.setOnMouseClicked( bpmSetting.getBpmChange(bpmSetting.LessIncrease) );
-		bpmIncrease.setOnMouseClicked( bpmSetting.getBpmChange(bpmSetting.NormalIncrease) );
-		bpmMoreIncrease.setOnMouseClicked( bpmSetting.getBpmChange(bpmSetting.MoreIncrease) );
+		bpmLessDecrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.LessDecrease) );
+		bpmDecrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.NormalDecrease) );
+		bpmMoreDecrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.MoreDecrease) );
+		bpmLessIncrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.LessIncrease) );
+		bpmIncrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.NormalIncrease) );
+		bpmMoreIncrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.MoreIncrease) );
 		
 		bpmSlider.valueProperty().addListener( bpmSetting.getSliderEvent() );
 		
-		offsetDecrease.setOnMouseClicked( offsetSetting.getoffsetChange( offsetSetting.NormalDecrease) );
-		offsetMoreDecrease.setOnMouseClicked( offsetSetting.getoffsetChange( offsetSetting.MoreDecrease) );
-		offsetIncrease.setOnMouseClicked( offsetSetting.getoffsetChange( offsetSetting.NormalIncrease) );
-		offsetMoreIncrease.setOnMouseClicked( offsetSetting.getoffsetChange( offsetSetting.MoreIncrease) );
+		offsetDecrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.NormalDecrease) );
+		offsetMoreDecrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.MoreDecrease) );
+		offsetIncrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.NormalIncrease) );
+		offsetMoreIncrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.MoreIncrease) );
+		
+		volumeSlider.valueProperty().addListener( VolumeSetting.getSliderEvnet() );
 		
 		keyboardHook.addKeyListener(new GlobalKeyAdapter() {
 			
@@ -145,7 +147,7 @@ public class Controller implements Initializable {
 						Platform.runLater(() -> bpmButtons[idx].setText(bpmSetting.IncreaseStepSize(bpmButtons[idx])) );
 						Platform.runLater(() -> {
 							offsetButtons[idx].setText(offsetSetting.IncreaseStepSize(offsetButtons[idx]));
-							offsetButtons[idx].setOnMouseClicked( offsetSetting.getoffsetChange( Integer.parseInt(offsetButtons[idx].getText()) ) );
+							offsetButtons[idx].setOnMouseClicked( offsetSetting.getButtonEvent( Integer.parseInt(offsetButtons[idx].getText()) ) );
 						});
 					}
 				}
@@ -178,7 +180,7 @@ public class Controller implements Initializable {
 						Platform.runLater(() -> bpmButtons[idx].setText(bpmSetting.DecreaseStepSize(bpmButtons[idx])) );
 						Platform.runLater(() -> {
 							offsetButtons[idx].setText(offsetSetting.DecreaseStepSize(offsetButtons[idx]));
-							offsetButtons[idx].setOnMouseClicked( offsetSetting.getoffsetChange( Integer.parseInt(offsetButtons[idx].getText()) ) );
+							offsetButtons[idx].setOnMouseClicked( offsetSetting.getButtonEvent( Integer.parseInt(offsetButtons[idx].getText()) ) );
 						});
 					}
 				}

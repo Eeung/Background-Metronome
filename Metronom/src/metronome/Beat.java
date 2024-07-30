@@ -12,7 +12,7 @@ public class Beat{
 	Beat() {
 		new JFXPanel(); //이게 없으면 IllegalStateException 예외가 발생함
 			
-		String accentBeatFile = "/audio/Tock.wav";
+		String accentBeatFile = "/audio/Tick.wav";
         String normalBeatFile = "/audio/Tock.wav";
             
         accentBeat = new AudioClip(getClass().getResource(accentBeatFile).toString());
@@ -31,7 +31,7 @@ public class Beat{
 	}
 	
 	public void setVolume(int vol) {
-		double volume = (double)vol / 100;
+		double volume = vol / 100.0;
 		normalBeat.setVolume(volume);
 		accentBeat.setVolume(volume);
 	}
