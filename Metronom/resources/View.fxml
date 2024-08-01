@@ -13,43 +13,15 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="metronome.components.Controller">
+<AnchorPane prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="metronome.Controller">
    <children>
       <SplitPane dividerPositions="0.32217573221757323" focusTraversable="false" layoutX="211.0" layoutY="129.0" orientation="VERTICAL" prefHeight="480.0" prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <FlowPane id="metronomeVisualPane" fx:id="metronomeVisualPane" alignment="CENTER" columnHalignment="CENTER" layoutX="186.0" prefHeight="236.0" prefWidth="638.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
-                           <children>
-                              <Circle id="0" fx:id="beat_0" fill="#ff961f" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </Circle>
-                              <Circle id="1" fx:id="beat_1" fill="#ffdf21" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </Circle>
-                              <Circle id="2" fx:id="beat_2" fill="#ffdf21" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </Circle>
-                              <Circle id="3" fx:id="beat_3" fill="#ffdf21" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </Circle>
-                           </children>
-                        </HBox>
-                     </children>
-                  </FlowPane>
+                  <FlowPane id="metronomeVisualPane" fx:id="metronomeVisualPane" alignment="CENTER" columnHalignment="CENTER" hgap="5.0" layoutX="186.0" prefHeight="236.0" prefWidth="638.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <FlowPane id="MediaVisualPane" fx:id="mediaVisualPane" alignment="CENTER" prefHeight="151.0" prefWidth="638.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Label text="(￣3￣)  ~~♪">

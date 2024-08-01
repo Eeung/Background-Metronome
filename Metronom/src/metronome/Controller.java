@@ -1,14 +1,9 @@
-package metronome.components;
+package metronome;
 
 import java.net.*;
 import java.util.*;
 
 import lc.kra.system.keyboard.GlobalKeyboardHook;
-import lc.kra.system.keyboard.event.GlobalKeyAdapter;
-import lc.kra.system.keyboard.event.GlobalKeyEvent;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.*;
@@ -17,9 +12,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import metronome.SoundPlayer;
+import metronome.sound.SoundPlayer;
 import metronome.components.actions.VolumeSetting;
 import metronome.components.actions.bpmSetting;
+import metronome.components.actions.indicatorSetting;
 import metronome.components.actions.offsetSetting;
 import metronome.components.actions.playAndStop;
 
@@ -74,37 +70,30 @@ public class Controller implements Initializable {
 	private Label bpmText;
 	@FXML
 	private Label offsetText;
-	@FXML
-	private Circle beat_0;
-	@FXML
-	private Circle beat_1;
-	@FXML
-	private Circle beat_2;
-	@FXML
-	private Circle beat_3;
 	
 	Button[] bpmButtons;
 	Button[] offsetButtons;
 	
 	private Stage stage;
-	boolean isFocused = false;
+	private boolean isFocused = false;
 	
 	private SoundPlayer player ;
 	private boolean isPlayed = false;
 	private long startTime;
 	
-	GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
-	boolean[] keyPressed = new boolean[255];
+	private GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
 	
+	private int accentArray = 0b0000_0000_0000_0000_0000_0000_0000_0001;
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		bpmButtons = new Button[]{bpmLessDecrease, bpmDecrease, bpmLessIncrease, bpmIncrease};
 		offsetButtons = new Button[]{offsetDecrease, offsetMoreDecrease, offsetIncrease, offsetMoreIncrease};
-		Integer[] ArrList = {4,6,8,12,16,24};
-		ObservableList<Integer> beats = FXCollections.observableArrayList(ArrList);
+		ObservableList<Integer> beats = FXCollections.observableArrayList(new Integer[] {4,6,8,12,16,24});
 		selectBeat.setItems(beats);
-		player = new SoundPlayer(4);
+		selectBeat.getSelectionModel().selectFirst();
+		player = new SoundPlayer();
 		
+		//표기 bpm 설정
 		int bpm = Integer.parseInt( bpmValue.getText() );
 		StringBuilder sb = new StringBuilder();
 		sb.append( bpm/100 );
@@ -115,6 +104,8 @@ public class Controller implements Initializable {
 			sb.append(str.substring(1));
 		}
 		bpmText.setText( sb.toString() );
+		
+		//각 컴포넌트의 이벤트 설정
 		playSound.setOnAction( playAndStop.getPlay() );
 		stopSound.setOnAction( playAndStop.getStop() );
 		
@@ -126,6 +117,7 @@ public class Controller implements Initializable {
 		bpmMoreIncrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.MoreIncrease) );
 		
 		bpmSlider.valueProperty().addListener( bpmSetting.getSliderEvent() );
+		bpmSlider.focusedProperty().addListener( indicatorSetting.getBlurEvent() );
 		
 		offsetDecrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.NormalDecrease) );
 		offsetMoreDecrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.MoreDecrease) );
@@ -133,62 +125,22 @@ public class Controller implements Initializable {
 		offsetMoreIncrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.MoreIncrease) );
 		
 		volumeSlider.valueProperty().addListener( VolumeSetting.getSliderEvnet() );
+		volumeSlider.focusedProperty().addListener( indicatorSetting.getBlurEvent() );
 		
-		keyboardHook.addKeyListener(new GlobalKeyAdapter() {
-			
-			@Override 
-			public void keyPressed(GlobalKeyEvent e) {
-				//System.out.println(e);
-				if(keyPressed[e.getVirtualKeyCode()]) return;
-				
-				if(isFocused && e.isShiftPressed()) {	//shift
-					for (int i=0;i<4;i++) {
-						final int idx = i;
-						Platform.runLater(() -> bpmButtons[idx].setText(bpmSetting.IncreaseStepSize(bpmButtons[idx])) );
-						Platform.runLater(() -> {
-							offsetButtons[idx].setText(offsetSetting.IncreaseStepSize(offsetButtons[idx]));
-							offsetButtons[idx].setOnMouseClicked( offsetSetting.getButtonEvent( Integer.parseInt(offsetButtons[idx].getText()) ) );
-						});
-					}
-				}
-				
-				if(isPlayed) {
-					if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_OEM_5) {	// ctrl + \
-						long current = System.currentTimeMillis();
-						Platform.runLater(() -> offsetText.setText(Long.toString(current-startTime)) );
-						player.setOffset( (int)(current-startTime) );
-					}
-					if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {	// esc
-						stopSound.fire();
-					}
-				} else {
-					if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_RETURN) {	// ctrl + enter
-						playSound.fire();
-					}
-				}
-				
-				keyPressed[e.getVirtualKeyCode()] = true;
-			}
-			
-			@Override 
-			public void keyReleased(GlobalKeyEvent e) {
-				//쉬프트 땠을 때, 원상태로 복귀 코드 입력
-				if(isFocused && e.getVirtualKeyCode() == GlobalKeyEvent.VK_LSHIFT) {
-					
-					for (int i=0;i<4;i++) {
-						final int idx = i;
-						Platform.runLater(() -> bpmButtons[idx].setText(bpmSetting.DecreaseStepSize(bpmButtons[idx])) );
-						Platform.runLater(() -> {
-							offsetButtons[idx].setText(offsetSetting.DecreaseStepSize(offsetButtons[idx]));
-							offsetButtons[idx].setOnMouseClicked( offsetSetting.getButtonEvent( Integer.parseInt(offsetButtons[idx].getText()) ) );
-						});
-					}
-				}
-				
-				keyPressed[e.getVirtualKeyCode()] = false;
-			}
-			
-		});
+		//비트 조정 추가
+		
+		for(int i=0; i<selectBeat.getSelectionModel().getSelectedItem(); i++) {
+			Circle ball = new Circle(30);
+			ball.setId( Integer.toString(i) );
+			int bit = 1<<i;
+			if((accentArray & bit) == bit) ball.focusedProperty().addListener( indicatorSetting.getAccentBeatEvent(ball) ); // 공의 색상 설정
+			else ball.focusedProperty().addListener( indicatorSetting.getNormalBeatEvent(ball) );
+			ball.setOnMouseClicked( indicatorSetting.getChangeBeatEvent(ball) );
+			metronomeVisualPane.getChildren().add(ball);
+		}
+		
+		keyboardHook.addKeyListener(keyboardEvent.getInstance());
+		
 	}
 	
 	public Controller() {
@@ -201,19 +153,10 @@ public class Controller implements Initializable {
 	
 	public void setStage(Stage stage) {
         this.stage = stage;
-
         // 창의 포커스 상태를 감지하는 리스너 추가
-        this.stage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-                    //System.out.println("Window gained focus");
-                	isFocused = true;
-                } else {
-                    //System.out.println("Window lost focus");
-                	isFocused = false;
-                }
-            }
+        this.stage.focusedProperty().addListener((observable,oldValue,newValue) -> {
+            if (newValue) isFocused = true;
+            else isFocused = false;
         });
     }
 	
@@ -328,11 +271,29 @@ public class Controller implements Initializable {
 		this.isPlayed = isPlayed;
 	}
 	
+	public boolean isFocused() {
+		return isFocused;
+	}
+	
+	public long getStartTime() {
+		return startTime;
+	}
+	
 	public void setStartTime(long miliSec) {
 		startTime = miliSec;
 	}
 	
 	public Circle[] getBeatIndicator() {
-		return new Circle[] {beat_0,beat_1,beat_2,beat_3};
+		return metronomeVisualPane.getChildren().toArray(new Circle[0]);
+	}
+	
+	public boolean isAccent(int idx) {
+		if( ((accentArray>>>idx) & 1) == 1) return true;
+		return false;
+	}
+
+	public void setIsAccent(int idx, boolean newValue) {
+		if(newValue) this.accentArray |= 1 << idx;
+		else this.accentArray &= ~(1 << idx) ;
 	}
 }

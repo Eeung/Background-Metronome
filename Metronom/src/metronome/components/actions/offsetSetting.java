@@ -5,8 +5,8 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import metronome.SoundPlayer;
-import metronome.components.Controller;
+import metronome.Controller;
+import metronome.sound.SoundPlayer;
 
 public class offsetSetting {	
 	public static final int NormalDecrease = -1;

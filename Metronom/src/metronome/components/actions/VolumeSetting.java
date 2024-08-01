@@ -3,11 +3,11 @@ package metronome.components.actions;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Slider;
-import metronome.SoundPlayer;
-import metronome.components.Controller;
+import metronome.Controller;
+import metronome.sound.SoundPlayer;
 
 public class VolumeSetting {	
-	private static Controller root = Controller.getInstance();
+	private final static Controller root = Controller.getInstance();
 	private static Slider volumeSlider = root.getVolumeSlider();
 	private static SoundPlayer player;
 	

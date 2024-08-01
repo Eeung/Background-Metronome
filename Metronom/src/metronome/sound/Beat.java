@@ -1,4 +1,4 @@
-package metronome;
+package metronome.sound;
 
 
 import javafx.embed.swing.JFXPanel;
@@ -20,11 +20,13 @@ public class Beat{
 		music = new MediaPlayer(new Media(getClass().getResource("/audio/Tock.wav").toString()));
 	}
 	
-	public void play(int idx) {
-		if(idx==0) {
+	public void play(boolean isAccent) {
+		if(isAccent) {
 			accentBeat.stop();
+			normalBeat.stop();
 			accentBeat.play();
 		} else {
+			accentBeat.stop();
 			normalBeat.stop();
 			normalBeat.play();
 		}

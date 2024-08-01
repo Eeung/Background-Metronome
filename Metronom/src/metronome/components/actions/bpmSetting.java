@@ -7,8 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
-import metronome.SoundPlayer;
-import metronome.components.Controller;
+import metronome.Controller;
+import metronome.sound.SoundPlayer;
 
 public class bpmSetting {	
 	public static final int LessDecrease = -1;

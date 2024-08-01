@@ -1,12 +1,15 @@
 package metronome.components.actions;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import metronome.SoundPlayer;
-import metronome.components.Controller;
+import javafx.scene.layout.FlowPane;
+import metronome.Controller;
+import metronome.sound.SoundPlayer;
 
 public class playAndStop {
 	private static final Controller root = Controller.getInstance();
@@ -15,7 +18,9 @@ public class playAndStop {
 	private static Label bpmValue = root.getBpmValue();
 	private static Label offsetText = root.getOffsetText();
 	private static Slider volumeSlider = root.getVolumeSlider();
+	private static ComboBox<Integer> selectBeat = root.getSelectBeat();
 	private static SoundPlayer player;
+	private static FlowPane metronomeVisualPane = root.getMetronomeVisualPane();
 
 	public static play getPlay() {
 		return play.getInstance();
@@ -33,7 +38,8 @@ public class playAndStop {
 			playSound.setDisable(true);
 			stopSound.setDisable(false);
 			
-			player.setBit(4);
+			player.setBit( selectBeat.getSelectionModel().getSelectedItem() );
+			player.setIndicator(root.getBeatIndicator());
 			
 			player.setBpm( Integer.parseInt(bpmValue.getText()) / 100.0);
 			player.setOffset( Integer.parseInt(offsetText.getText()) );
@@ -63,7 +69,8 @@ public class playAndStop {
 			stopSound.setDisable(true);
 			
 			player.scheduleCancel();
-			root.setPlayer(new SoundPlayer(4));
+			root.setPlayer(new SoundPlayer());
+			Platform.runLater(() -> metronomeVisualPane.requestFocus() );
 			root.setPlayed(false);
 		}
 		
