@@ -87,7 +87,7 @@ public class indicatorSetting {
 		@Override
 		public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 			if(!(newValue && root.isPlayed())) return;
-			root.getBeatIndicator()[SoundPlayer.getBeat_sequence()].requestFocus();
+			root.getBeatIndicator( root.getIndicatorRows() )[SoundPlayer.getBeat_sequence()].requestFocus();
 		}
 		
 		//Singleton Pattern

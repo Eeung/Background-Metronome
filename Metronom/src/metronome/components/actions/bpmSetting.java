@@ -23,7 +23,6 @@ public class bpmSetting {
 	private static Label bpmValue = root.getBpmValue();
 	private static Label bpmText = root.getBpmText();
 	private static Slider bpmSlider = root.getBpmSlider();
-	private static SoundPlayer player;
 	private static boolean isShift = false;
 	
 	public static bpmChange getButtonEvent(int mode) {
@@ -72,7 +71,6 @@ public class bpmSetting {
 		@Override
 		public void handle(MouseEvent arg0) {
 			if(bpmChange == null) return;
-			player = root.getPlayer();
 			
 			int bpm = Integer.parseInt(bpmValue.getText());
 			int weight = (int) (Double.parseDouble( bpmChange.getText() )*100);
@@ -90,7 +88,7 @@ public class bpmSetting {
 			}
 			
 			bpmValue.setText( Integer.toString(bpm) );
-			player.setBpm(bpm/100.0);
+			SoundPlayer.setBpm(bpm/100.0);
 			bpmText.setText( sb.toString() );
 			
 			bpmSlider.setValue(bpm/100.0);
@@ -108,7 +106,6 @@ public class bpmSetting {
 		@Override
 		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 			if(!bpmSlider.isValueChanging()) return;
-			player = root.getPlayer();
 			
 			int result = (int) (newValue.doubleValue()*100);
 			
@@ -122,7 +119,7 @@ public class bpmSetting {
 			}
 			
 			bpmValue.setText( Integer.toString(result/100*100) );
-			player.setBpm((result/100*100)/100.0);
+			SoundPlayer.setBpm((result/100*100)/100.0);
 			bpmText.setText( sb.toString() );
 			System.out.println("Slider Value Changed: " + sb.toString());
 		}

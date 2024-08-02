@@ -21,8 +21,7 @@ public class offsetSetting {
 	private static final Controller root = Controller.getInstance();
 	
 	private static Label offsetText = root.getOffsetText();
-	private static SoundPlayer player;
-	private static int step;
+	
 	
 	public static offsetChange getButtonEvent(int mode) {
 		offsetChange a = new offsetChange(mode);
@@ -48,6 +47,7 @@ public class offsetSetting {
 	
 	private static class offsetChange implements EventHandler<MouseEvent>{
 		private Button offsetChange;
+		private int step;
 		
 		public offsetChange(int mode) {
 			step = mode;
@@ -67,7 +67,6 @@ public class offsetSetting {
 		@Override
 		public void handle(MouseEvent arg0) {
 			if(offsetChange == null) return;
-			player = root.getPlayer();
 			
 			int offset = Integer.parseInt( offsetText.getText() );
 			int weight = step;
@@ -78,7 +77,7 @@ public class offsetSetting {
 			final int result = offset;
 			
 			Platform.runLater(() -> offsetText.setText( Integer.toString(result) ) );
-			player.setOffset(offset);
+			SoundPlayer.setOffset(offset);
 		}
 		
 		private int rangeCheck(int target, int min, int max) {

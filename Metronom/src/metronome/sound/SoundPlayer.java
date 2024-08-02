@@ -12,30 +12,26 @@ import metronome.Controller;
 public class SoundPlayer{
 	private final static Controller root = Controller.getInstance();
 	
-	private double bpm=-1;
-	private int pre_offset = Integer.MIN_VALUE;
+	private static double bpm=-1;
+	private static int pre_offset = Integer.MIN_VALUE;
 
-	private int offset = 0;
-	private Beat beat = new Beat();
-	private static int beat_sequence, bit;
+	private static int offset = 0;
+	private static Beat beat = new Beat();
+	private static int bit_sequence, bit;
 	
-	private ScheduledExecutorService beatExecutor = Executors.newSingleThreadScheduledExecutor();
-	private ScheduledFuture<?> beatScheduled;
-	private Runnable play;
-	private Circle[] indicator;
-		
-	public SoundPlayer() {
-		beat_sequence = 0;
-	}
+	private static ScheduledExecutorService beatExecutor = Executors.newSingleThreadScheduledExecutor();
+	private static ScheduledFuture<?> beatScheduled;
+	private static Runnable play;
+	private static Circle[] indicator;
 	
-	public void start() {
+	public static void start() {
 		if(bpm<0) return;
 		
 		long nanoPeriod = (long) (60_000_000_000L/(bpm*bit/4));
 		play = () -> {
-			beat_sequence %= bit;
-			beat.play( root.isAccent(beat_sequence) );
-			Platform.runLater( () -> indicator[beat_sequence++].requestFocus() );
+			bit_sequence %= bit;
+			beat.play( root.isAccent(bit_sequence) );
+			Platform.runLater( () -> indicator[bit_sequence++].requestFocus() );
 		};
 		beatScheduled = beatExecutor.scheduleAtFixedRate(play, offset*1_000_000L, nanoPeriod, TimeUnit.NANOSECONDS);
 		
@@ -43,14 +39,15 @@ public class SoundPlayer{
 		offset = 0;
 	}
 	
-	public void scheduleCancel() {
+	public static void scheduleCancel() {
 		beatScheduled.cancel(true);
 		beatScheduled = null;
+		bit_sequence = 0;
 		pre_offset = Integer.MIN_VALUE;
 		System.out.println("종료 됨!");
 	}
 	
-	private void scheduleRestart() {
+	private static void scheduleRestart() {
 		long nanoPeriod = (long) (60_000_000_000L/(bpm*bit/4));	//바뀐 bpm에 따라 간격 구하기
 		
 		Long remainDelay = beatScheduled.getDelay(TimeUnit.NANOSECONDS);	//다음 비트가 재생될 때까지 남은 딜레이 가져오기
@@ -62,38 +59,42 @@ public class SoundPlayer{
 		beatScheduled = beatExecutor.scheduleAtFixedRate(play, remainDelay, nanoPeriod, TimeUnit.NANOSECONDS);
 	}
 	
-	public void setBpm(double bpm) {
-		this.bpm = bpm;
-		//매트로놈 중간에 bpm 바꿀 때,
-		if(beatScheduled != null)
-			scheduleRestart();
+	public static void setBpm(double b) {
+		bpm = b;
+		//매트로놈 중간에 bpm을 바꿀 때,
+		if(beatScheduled != null) scheduleRestart();
 	}
 	
-	public void setOffset(int off) {
+	public static void setOffset(int off) {
 		if(pre_offset == Integer.MIN_VALUE) {
 			offset = off;
 			return;
 		}
 		offset = off - pre_offset;
 		pre_offset = off;
-		//매트로놈 중간에 오프셋 바꿀 때,
-		if(beatScheduled != null)
-			scheduleRestart();
+		//매트로놈 중간에 오프셋을 바꿀 때,
+		if(beatScheduled != null) scheduleRestart();
 	}
 	
-	public void setVolume(int vol) {
+	public static void setVolume(int vol) {
 		beat.setVolume(vol);
 	}
 	
-	public void setBit(int b) {
+	public static void setBit(int b) {
 		bit = b;
+		//매트로놈 중간에 비트를 바꿀 때,
+		if(beatScheduled != null) {
+			bit_sequence *= ((bit_sequence-1 - bit) >> 31) & 1;
+			scheduleRestart();
+		}
 	}
 	
-	public void setIndicator(Circle[] indicator) {
-		this.indicator = indicator;
+	public static void setIndicator(Circle[] indi) {
+		indicator = indi;
 	}
 	
 	public static int getBeat_sequence() {
-		return (beat_sequence-1)%bit;
+		int result = (bit_sequence-1)%bit;
+		return result;
 	}
 }

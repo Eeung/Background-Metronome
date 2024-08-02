@@ -15,7 +15,6 @@ public class keyboardEvent implements GlobalKeyListener {
 	private Button[] bpmButtons = {root.getBpmLessDecrease(), root.getBpmDecrease(), root.getBpmLessIncrease(), root.getBpmIncrease()};
 	private Button[] offsetButtons = {root.getOffsetDecrease(), root.getOffsetMoreDecrease(), root.getOffsetIncrease(), root.getOffsetMoreIncrease()};
 	private Label offsetText = root.getOffsetText();
-	private SoundPlayer player = root.getPlayer();
 	private Button playSound = root.getPlaySound();
 	private Button stopSound = root.getStopSound();
 	
@@ -42,7 +41,7 @@ public class keyboardEvent implements GlobalKeyListener {
 			if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_OEM_5) {	// ctrl + \
 				long current = System.currentTimeMillis();
 				Platform.runLater(() -> offsetText.setText(Long.toString(current-root.getStartTime())) );
-				player.setOffset( (int)(current-root.getStartTime()) );
+				SoundPlayer.setOffset( (int)(current-root.getStartTime()) );
 			}
 			if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {	// esc
 				stopSound.fire();

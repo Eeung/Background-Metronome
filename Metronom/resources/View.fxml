@@ -17,11 +17,11 @@
 
 <AnchorPane prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="metronome.Controller">
    <children>
-      <SplitPane dividerPositions="0.32217573221757323" focusTraversable="false" layoutX="211.0" layoutY="129.0" orientation="VERTICAL" prefHeight="480.0" prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.32217573221757323" focusTraversable="false" layoutX="211.0" layoutY="129.0" orientation="VERTICAL" prefHeight="464.0" prefWidth="632.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <FlowPane id="metronomeVisualPane" fx:id="metronomeVisualPane" alignment="CENTER" columnHalignment="CENTER" hgap="5.0" layoutX="186.0" prefHeight="236.0" prefWidth="638.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <VBox fx:id="metronomeVisualPane" alignment="CENTER" prefHeight="151.0" prefWidth="638.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <FlowPane id="MediaVisualPane" fx:id="mediaVisualPane" alignment="CENTER" prefHeight="151.0" prefWidth="638.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Label text="(￣3￣)  ~~♪">
@@ -39,7 +39,7 @@
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <BorderPane id="metronomeControlPane" fx:id="metronomeControlPane" prefHeight="144.0" prefWidth="561.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <BorderPane id="metronomeControlPane" fx:id="metronomeControlPane" prefHeight="178.0" prefWidth="636.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <bottom>
                                     <FlowPane alignment="CENTER" BorderPane.alignment="CENTER">
                                        <children>
@@ -157,18 +157,55 @@
                                  <top>
                                     <HBox BorderPane.alignment="CENTER">
                                        <children>
-                                          <Label focusTraversable="false" text="Beats: ">
+                                          <Label focusTraversable="false" text="Bits: ">
                                              <font>
                                                 <Font size="19.0" />
                                              </font>
                                           </Label>
-                                          <ComboBox id="selectBeat" fx:id="selectBeat" focusTraversable="false" promptText="4" />
+                                          <ComboBox id="selectBeat" fx:id="selectNote" focusTraversable="false" promptText="0" />
                                        </children>
                                        <BorderPane.margin>
                                           <Insets bottom="-20.0" left="5.0" top="5.0" />
                                        </BorderPane.margin>
                                     </HBox>
                                  </top>
+                                 <right>
+                                    <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <Label fx:id="timeSignatureTime" text="4" textAlignment="CENTER">
+                                             <font>
+                                                <Font size="45.0" />
+                                             </font>
+                                          </Label>
+                                          <Label text="━" textAlignment="CENTER">
+                                             <VBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </VBox.margin>
+                                             <font>
+                                                <Font size="30.0" />
+                                             </font>
+                                             <padding>
+                                                <Insets bottom="-15.0" top="-15.0" />
+                                             </padding>
+                                          </Label>
+                                          <Label fx:id="timeSignatureBeat" text="4" textAlignment="CENTER">
+                                             <font>
+                                                <Font size="45.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                 </right>
+                                 <left>
+                                    <Label text="━" visible="false" BorderPane.alignment="CENTER">
+                                       <font>
+                                          <Font size="30.0" />
+                                       </font>
+                                       <BorderPane.margin>
+                                          <Insets left="10.0" right="10.0" />
+                                       </BorderPane.margin>
+                                    </Label>
+                                 </left>
                               </BorderPane>
                               <BorderPane id="MediaControlPane" fx:id="mediaControlPane" prefHeight="178.0" prefWidth="636.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <bottom>
@@ -332,7 +369,7 @@
                                                 </VBox>
                                              </left>
                                              <center>
-                                                <FlowPane alignment="CENTER" prefHeight="63.0" prefWidth="634.0" BorderPane.alignment="CENTER">
+                                                <FlowPane alignment="CENTER" BorderPane.alignment="CENTER">
                                                    <children>
                                                       <Button fx:id="playSound" focusTraversable="false" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-radius: 20; -fx-background-color: #ff4d4d; -fx-border-color: #ff753f; -fx-border-radius: 20;" text="▶" textFill="WHITE">
                                                          <FlowPane.margin>

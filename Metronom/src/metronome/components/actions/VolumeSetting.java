@@ -9,7 +9,6 @@ import metronome.sound.SoundPlayer;
 public class VolumeSetting {	
 	private final static Controller root = Controller.getInstance();
 	private static Slider volumeSlider = root.getVolumeSlider();
-	private static SoundPlayer player;
 	
 	public static volume getSliderEvnet() {
 		return volume.getInstance();
@@ -19,11 +18,10 @@ public class VolumeSetting {
 		@Override
 		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 			if(!volumeSlider.isValueChanging()) return;
-			player = root.getPlayer();
 			
 			int result = newValue.intValue();
 			
-			player.setVolume(result);
+			SoundPlayer.setVolume(result);
 			
 			System.out.println("Volume Value Changed: " + result);
 		}

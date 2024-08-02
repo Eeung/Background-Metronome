@@ -7,13 +7,15 @@ import lc.kra.system.keyboard.GlobalKeyboardHook;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.*;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import metronome.sound.SoundPlayer;
 import metronome.components.actions.VolumeSetting;
+import metronome.components.actions.beatSetting;
 import metronome.components.actions.bpmSetting;
 import metronome.components.actions.indicatorSetting;
 import metronome.components.actions.offsetSetting;
@@ -29,7 +31,7 @@ public class Controller implements Initializable {
 	@FXML
 	private FlowPane mediaVisualPane;
 	@FXML
-	private FlowPane metronomeVisualPane;
+	private VBox metronomeVisualPane;
 	@FXML
 	private ToggleButton selectMedia;
 	@FXML
@@ -59,7 +61,7 @@ public class Controller implements Initializable {
 	@FXML
 	private Button stopSound;
 	@FXML
-	private ComboBox<Integer> selectBeat;
+	private ComboBox<Integer> selectNote;
 	@FXML
 	private Slider bpmSlider;
 	@FXML
@@ -70,6 +72,10 @@ public class Controller implements Initializable {
 	private Label bpmText;
 	@FXML
 	private Label offsetText;
+	@FXML
+	private Label timeSignatureTime;
+	@FXML
+	private Label timeSignatureBeat;
 	
 	Button[] bpmButtons;
 	Button[] offsetButtons;
@@ -77,7 +83,6 @@ public class Controller implements Initializable {
 	private Stage stage;
 	private boolean isFocused = false;
 	
-	private SoundPlayer player ;
 	private boolean isPlayed = false;
 	private long startTime;
 	
@@ -88,10 +93,9 @@ public class Controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		bpmButtons = new Button[]{bpmLessDecrease, bpmDecrease, bpmLessIncrease, bpmIncrease};
 		offsetButtons = new Button[]{offsetDecrease, offsetMoreDecrease, offsetIncrease, offsetMoreIncrease};
-		ObservableList<Integer> beats = FXCollections.observableArrayList(new Integer[] {4,6,8,12,16,24});
-		selectBeat.setItems(beats);
-		selectBeat.getSelectionModel().selectFirst();
-		player = new SoundPlayer();
+		//ObservableList<Integer> beats = FXCollections.observableArrayList(new Integer[] {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32});
+		ObservableList<Integer> beats = FXCollections.observableArrayList(new Integer[] {4,6,8,12,16,24,32});
+		selectNote.setItems(beats);
 		
 		//표기 bpm 설정
 		int bpm = Integer.parseInt( bpmValue.getText() );
@@ -127,17 +131,8 @@ public class Controller implements Initializable {
 		volumeSlider.valueProperty().addListener( VolumeSetting.getSliderEvnet() );
 		volumeSlider.focusedProperty().addListener( indicatorSetting.getBlurEvent() );
 		
-		//비트 조정 추가
-		
-		for(int i=0; i<selectBeat.getSelectionModel().getSelectedItem(); i++) {
-			Circle ball = new Circle(30);
-			ball.setId( Integer.toString(i) );
-			int bit = 1<<i;
-			if((accentArray & bit) == bit) ball.focusedProperty().addListener( indicatorSetting.getAccentBeatEvent(ball) ); // 공의 색상 설정
-			else ball.focusedProperty().addListener( indicatorSetting.getNormalBeatEvent(ball) );
-			ball.setOnMouseClicked( indicatorSetting.getChangeBeatEvent(ball) );
-			metronomeVisualPane.getChildren().add(ball);
-		}
+		selectNote.valueProperty().addListener( beatSetting.getBeatSelectEvent() );
+		selectNote.getSelectionModel().select(3);
 		
 		keyboardHook.addKeyListener(keyboardEvent.getInstance());
 		
@@ -172,7 +167,7 @@ public class Controller implements Initializable {
 		return mediaVisualPane;
 	}
 
-	public FlowPane getMetronomeVisualPane() {
+	public VBox getMetronomeVisualPane() {
 		return metronomeVisualPane;
 	}
 
@@ -232,7 +227,7 @@ public class Controller implements Initializable {
 		return stopSound;
 	}
 	public ComboBox<Integer> getSelectBeat() {
-		return selectBeat;
+		return selectNote;
 	}
 
 	public Slider getBpmSlider() {
@@ -253,14 +248,6 @@ public class Controller implements Initializable {
 
 	public Label getOffsetText() {
 		return offsetText;
-	}
-	
-	public SoundPlayer getPlayer() {
-		return player;
-	}
-
-	public void setPlayer(SoundPlayer player) {
-		this.player = player;
 	}
 
 	public boolean isPlayed() {
@@ -283,8 +270,20 @@ public class Controller implements Initializable {
 		startTime = miliSec;
 	}
 	
-	public Circle[] getBeatIndicator() {
-		return metronomeVisualPane.getChildren().toArray(new Circle[0]);
+	public FlowPane[] getIndicatorRows() {
+		return metronomeVisualPane.getChildren().toArray(new FlowPane[0]);
+	}
+	
+	public Circle[] getBeatIndicator(FlowPane[] rows) {
+		Circle[] balls = new Circle[ selectNote.getValue() ];
+		int idx = 0;
+		for(FlowPane row : rows) {
+			ObservableList<Node> list = row.getChildren();
+			for(int i=0;i<list.size();i++) {
+				balls[idx++] = (Circle)list.get(i);
+			}
+		}
+		return balls;
 	}
 	
 	public boolean isAccent(int idx) {
