@@ -19,7 +19,7 @@ public class playAndStop {
 	private static Label offsetText = root.getOffsetText();
 	private static Slider volumeSlider = root.getVolumeSlider();
 	private static ComboBox<Integer> selectBeat = root.getSelectBeat();
-	private static VBox metronomeVisualPane = root.getMetronomeVisualPane();
+	private static VBox indicatorCol = root.getIndicatorCol();
 
 	public static play getPlay() {
 		return play.getInstance();
@@ -64,7 +64,7 @@ public class playAndStop {
 			stopSound.setDisable(true);
 			
 			SoundPlayer.scheduleCancel();
-			Platform.runLater(() -> metronomeVisualPane.requestFocus() );
+			Platform.runLater(() -> indicatorCol.requestFocus() );
 			root.setPlayed(false);
 		}
 		

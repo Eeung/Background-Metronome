@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -25,13 +26,15 @@ public class Controller implements Initializable {
 	private static Controller instance;
 	
 	@FXML
+	private FlowPane metronomeVisualPane;
+	@FXML
 	private BorderPane mediaControlPane;
 	@FXML
 	private BorderPane metronomeControlPane;
 	@FXML
 	private FlowPane mediaVisualPane;
 	@FXML
-	private VBox metronomeVisualPane;
+	private VBox indicatorCol;
 	@FXML
 	private ToggleButton selectMedia;
 	@FXML
@@ -136,6 +139,8 @@ public class Controller implements Initializable {
 		
 		keyboardHook.addKeyListener(keyboardEvent.getInstance());
 		
+		metronomeVisualPane.widthProperty().addListener((observable, oldValue, newValue) -> beatSetting.adjustBallSizes( getIndicatorRows() ));
+		metronomeVisualPane.heightProperty().addListener((observable, oldValue, newValue) -> beatSetting.adjustBallSizes( getIndicatorRows() ));
 	}
 	
 	public Controller() {
@@ -166,9 +171,13 @@ public class Controller implements Initializable {
 	public FlowPane getMediaVisualPane() {
 		return mediaVisualPane;
 	}
-
-	public VBox getMetronomeVisualPane() {
+	
+	public FlowPane getMetronomeVisualPane() {
 		return metronomeVisualPane;
+	}
+
+	public VBox getIndicatorCol() {
+		return indicatorCol;
 	}
 
 	public ToggleButton getSelectMedia() {
@@ -270,14 +279,14 @@ public class Controller implements Initializable {
 		startTime = miliSec;
 	}
 	
-	public FlowPane[] getIndicatorRows() {
-		return metronomeVisualPane.getChildren().toArray(new FlowPane[0]);
+	public HBox[] getIndicatorRows() {
+		return indicatorCol.getChildren().toArray(new HBox[0]);
 	}
 	
-	public Circle[] getBeatIndicator(FlowPane[] rows) {
+	public Circle[] getBeatIndicator(HBox[] rows) {
 		Circle[] balls = new Circle[ selectNote.getValue() ];
 		int idx = 0;
-		for(FlowPane row : rows) {
+		for(HBox row : rows) {
 			ObservableList<Node> list = row.getChildren();
 			for(int i=0;i<list.size();i++) {
 				balls[idx++] = (Circle)list.get(i);

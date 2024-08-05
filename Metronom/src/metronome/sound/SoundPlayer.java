@@ -17,7 +17,7 @@ public class SoundPlayer{
 
 	private static int offset = 0;
 	private static Beat beat = new Beat();
-	private static int bit_sequence, bit;
+	private static int bit_sequence = -1, bit;
 	
 	private static ScheduledExecutorService beatExecutor = Executors.newSingleThreadScheduledExecutor();
 	private static ScheduledFuture<?> beatScheduled;
@@ -29,9 +29,10 @@ public class SoundPlayer{
 		
 		long nanoPeriod = (long) (60_000_000_000L/(bpm*bit/4));
 		play = () -> {
+			bit_sequence++;
 			bit_sequence %= bit;
 			beat.play( root.isAccent(bit_sequence) );
-			Platform.runLater( () -> indicator[bit_sequence++].requestFocus() );
+			Platform.runLater( () -> indicator[bit_sequence].requestFocus() );
 		};
 		beatScheduled = beatExecutor.scheduleAtFixedRate(play, offset*1_000_000L, nanoPeriod, TimeUnit.NANOSECONDS);
 		
@@ -42,7 +43,7 @@ public class SoundPlayer{
 	public static void scheduleCancel() {
 		beatScheduled.cancel(true);
 		beatScheduled = null;
-		bit_sequence = 0;
+		bit_sequence = -1;
 		pre_offset = Integer.MIN_VALUE;
 		System.out.println("종료 됨!");
 	}
@@ -84,7 +85,8 @@ public class SoundPlayer{
 		bit = b;
 		//매트로놈 중간에 비트를 바꿀 때,
 		if(beatScheduled != null) {
-			bit_sequence *= ((bit_sequence-1 - bit) >> 31) & 1;
+			bit_sequence *= ((bit_sequence - bit) >> 31) & 1;
+			indicator[bit_sequence].requestFocus();
 			scheduleRestart();
 		}
 	}
@@ -94,7 +96,7 @@ public class SoundPlayer{
 	}
 	
 	public static int getBeat_sequence() {
-		int result = (bit_sequence-1)%bit;
+		int result = (bit_sequence)%bit;
 		return result;
 	}
 }

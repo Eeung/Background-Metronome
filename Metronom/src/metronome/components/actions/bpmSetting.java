@@ -23,7 +23,6 @@ public class bpmSetting {
 	private static Label bpmValue = root.getBpmValue();
 	private static Label bpmText = root.getBpmText();
 	private static Slider bpmSlider = root.getBpmSlider();
-	private static boolean isShift = false;
 	
 	public static bpmChange getButtonEvent(int mode) {
 		bpmChange a = new bpmChange(mode);
@@ -107,21 +106,13 @@ public class bpmSetting {
 		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 			if(!bpmSlider.isValueChanging()) return;
 			
-			int result = (int) (newValue.doubleValue()*100);
+			int result = newValue.intValue();
 			
-			StringBuilder sb = new StringBuilder();
-			sb.append( result/100 );
-			int remain = result%100;
-			if(isShift && remain>0) {
-				double num = remain/100.0;
-				String str = Double.toString(num);
-				sb.append(str.substring(1));
-			}
+			bpmValue.setText( Integer.toString(result*100) );
+			SoundPlayer.setBpm(result);
+			bpmText.setText( Integer.toString(result) );
 			
-			bpmValue.setText( Integer.toString(result/100*100) );
-			SoundPlayer.setBpm((result/100*100)/100.0);
-			bpmText.setText( sb.toString() );
-			System.out.println("Slider Value Changed: " + sb.toString());
+			System.out.println("Slider Value Changed: " + result);
 		}
 		
 		//Singleton Pattern

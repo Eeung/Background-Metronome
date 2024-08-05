@@ -21,8 +21,12 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <VBox fx:id="metronomeVisualPane" alignment="CENTER" prefHeight="151.0" prefWidth="638.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <FlowPane id="MediaVisualPane" fx:id="mediaVisualPane" alignment="CENTER" prefHeight="151.0" prefWidth="638.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <FlowPane fx:id="metronomeVisualPane" alignment="CENTER" prefHeight="151.0" prefWidth="638.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <VBox fx:id="indicatorCol" alignment="CENTER" spacing="5.0" />
+                     </children>
+                  </FlowPane>
+                  <FlowPane id="MediaVisualPane" fx:id="mediaVisualPane" alignment="CENTER" prefHeight="151.0" prefWidth="638.0" visible="false">
                      <children>
                         <Label text="(￣3￣)  ~~♪">
                            <font>
