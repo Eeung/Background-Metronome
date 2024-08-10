@@ -16,8 +16,9 @@ public class SoundPlayer{
 	private static int pre_offset = Integer.MIN_VALUE;
 
 	private static int offset = 0;
-	private static Beat beat = new Beat();
-	private static int bit_sequence = -1, bit;
+	private static Sound sound = new Sound();
+	private static int beat_sequence = -1, beat_count = -1;
+	private static int note, beat=4, time;
 	
 	private static ScheduledExecutorService beatExecutor = Executors.newSingleThreadScheduledExecutor();
 	private static ScheduledFuture<?> beatScheduled;
@@ -27,12 +28,12 @@ public class SoundPlayer{
 	public static void start() {
 		if(bpm<0) return;
 		
-		long nanoPeriod = (long) (60_000_000_000L/(bpm*bit/4));
+		long nanoPeriod = (long) (60_000_000_000L/(bpm* note/beat ));// 60초 / (bpm*노트/박자) -> 60초 / (120* 6비트/4분음표) = 1초
 		play = () -> {
-			bit_sequence++;
-			bit_sequence %= bit;
-			beat.play( root.isAccent(bit_sequence) );
-			Platform.runLater( () -> indicator[bit_sequence].requestFocus() );
+			beat_sequence++;
+			beat_sequence %= beat_count;
+			sound.play( root.isAccent(beat_sequence) );
+			Platform.runLater( () -> indicator[beat_sequence].requestFocus() );
 		};
 		beatScheduled = beatExecutor.scheduleAtFixedRate(play, offset*1_000_000L, nanoPeriod, TimeUnit.NANOSECONDS);
 		
@@ -43,13 +44,13 @@ public class SoundPlayer{
 	public static void scheduleCancel() {
 		beatScheduled.cancel(true);
 		beatScheduled = null;
-		bit_sequence = -1;
+		beat_sequence = -1;
 		pre_offset = Integer.MIN_VALUE;
 		System.out.println("종료 됨!");
 	}
 	
 	private static void scheduleRestart() {
-		long nanoPeriod = (long) (60_000_000_000L/(bpm*bit/4));	//바뀐 bpm에 따라 간격 구하기
+		long nanoPeriod = (long) (60_000_000_000L/(bpm* note/beat ));	//바뀐 bpm에 따라 간격 구하기
 		
 		Long remainDelay = beatScheduled.getDelay(TimeUnit.NANOSECONDS);	//다음 비트가 재생될 때까지 남은 딜레이 가져오기
 		Long nanoOff = offset*1_000_000L;
@@ -58,6 +59,10 @@ public class SoundPlayer{
 		beatScheduled.cancel(true);	//스케쥴 중지
 		//바뀐 정보대로 스케쥴 재시작
 		beatScheduled = beatExecutor.scheduleAtFixedRate(play, remainDelay, nanoPeriod, TimeUnit.NANOSECONDS);
+	}
+	
+	private static void setBeatCount() {
+		beat_count = note *time/beat;
 	}
 	
 	public static void setBpm(double b) {
@@ -78,16 +83,33 @@ public class SoundPlayer{
 	}
 	
 	public static void setVolume(int vol) {
-		beat.setVolume(vol);
+		sound.setVolume(vol);
 	}
 	
-	public static void setBit(int b) {
-		bit = b;
+	public static void setNote(int b) {
+		note = b;
+		setBeatCount();
 		//매트로놈 중간에 비트를 바꿀 때,
 		if(beatScheduled != null) {
-			bit_sequence *= ((bit_sequence - bit) >> 31) & 1;
-			indicator[bit_sequence].requestFocus();
+			beat_sequence *= ((beat_sequence - beat_count) >> 31) & 1;
+			indicator[beat_sequence].requestFocus();
 			scheduleRestart();
+		}
+	}
+	
+	public static void setBeat(int b) {
+		//beat = b;
+		setBeatCount();
+		//매트로놈 중간에 비트를 바꿀 때,
+		if(beatScheduled != null) {
+		}
+	}
+	
+	public static void setTime(int b) {
+		time = b;
+		setBeatCount();
+		//매트로놈 중간에 비트를 바꿀 때,
+		if(beatScheduled != null) {
 		}
 	}
 	
@@ -96,7 +118,7 @@ public class SoundPlayer{
 	}
 	
 	public static int getBeat_sequence() {
-		int result = (bit_sequence)%bit;
+		int result = (beat_sequence)%beat_count;
 		return result;
 	}
 }

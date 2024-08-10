@@ -14,13 +14,15 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import metronome.components.actions.VolumeSetting;
-import metronome.components.actions.beatSetting;
+import metronome.components.actions.noteSetting;
 import metronome.components.actions.bpmSetting;
 import metronome.components.actions.indicatorSetting;
 import metronome.components.actions.offsetSetting;
 import metronome.components.actions.playAndStop;
+import metronome.components.actions.timeSignatureSetting;
 
 public class Controller implements Initializable {
 	private static Controller instance;
@@ -79,9 +81,10 @@ public class Controller implements Initializable {
 	private Label timeSignatureTime;
 	@FXML
 	private Label timeSignatureBeat;
-	
-	Button[] bpmButtons;
-	Button[] offsetButtons;
+	@FXML
+	private Rectangle timeClickJone;
+	@FXML
+	private Rectangle beatClickJone;
 	
 	private Stage stage;
 	private boolean isFocused = false;
@@ -91,14 +94,14 @@ public class Controller implements Initializable {
 	
 	private GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
 	
-	private int accentArray = 0b0000_0000_0000_0000_0000_0000_0000_0001;
+	private long accentArray = 0x00_00_00_00_00_00_00_01L;
+	private static HashMap<Character,Integer> buravura = new HashMap<>(10);
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		bpmButtons = new Button[]{bpmLessDecrease, bpmDecrease, bpmLessIncrease, bpmIncrease};
-		offsetButtons = new Button[]{offsetDecrease, offsetMoreDecrease, offsetIncrease, offsetMoreIncrease};
-		//ObservableList<Integer> beats = FXCollections.observableArrayList(new Integer[] {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32});
-		ObservableList<Integer> beats = FXCollections.observableArrayList(new Integer[] {4,6,8,12,16,24,32});
-		selectNote.setItems(beats);
+		//ObservableList<Integer> notes = FXCollections.observableArrayList(new Integer[] {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32});
+		ObservableList<Integer> notes = FXCollections.observableArrayList(new Integer[] {4,6,8,12,16,24,32});
+		selectNote.setItems(notes);
 		
 		//표기 bpm 설정
 		int bpm = Integer.parseInt( bpmValue.getText() );
@@ -134,17 +137,24 @@ public class Controller implements Initializable {
 		volumeSlider.valueProperty().addListener( VolumeSetting.getSliderEvnet() );
 		volumeSlider.focusedProperty().addListener( indicatorSetting.getBlurEvent() );
 		
-		selectNote.valueProperty().addListener( beatSetting.getBeatSelectEvent() );
-		selectNote.getSelectionModel().select(3);
+		selectNote.valueProperty().addListener( noteSetting.getBeatSelectEvent() );
+		selectNote.getSelectionModel().select(0);
+		
+		timeClickJone.setOnMouseClicked(timeSignatureSetting.getTimeSignatureEvent(timeSignatureSetting.NUMERATOR, new String[]{"","","",""} , 1 ));
+		beatClickJone.setOnMouseClicked(timeSignatureSetting.getTimeSignatureEvent(timeSignatureSetting.DENOMINATOR, new String[]{"",""} ));
+		
 		
 		keyboardHook.addKeyListener(keyboardEvent.getInstance());
 		
-		metronomeVisualPane.widthProperty().addListener((observable, oldValue, newValue) -> beatSetting.adjustBallSizes( getIndicatorRows() ));
-		metronomeVisualPane.heightProperty().addListener((observable, oldValue, newValue) -> beatSetting.adjustBallSizes( getIndicatorRows() ));
+		metronomeVisualPane.widthProperty().addListener((observable, oldValue, newValue) -> indicatorSetting.adjustBallSizes( getIndicatorRows() ));
+		metronomeVisualPane.heightProperty().addListener((observable, oldValue, newValue) -> indicatorSetting.adjustBallSizes( getIndicatorRows() ));
 	}
 	
 	public Controller() {
 		instance = this;
+		char[] TimeSignatureCharacter = {'','','','','','','','','',''};
+		for(int i=0;i<10;i++)
+			buravura.put(TimeSignatureCharacter[i], i);
 	}
 	
 	public static Controller getInstance() {
@@ -284,7 +294,7 @@ public class Controller implements Initializable {
 	}
 	
 	public Circle[] getBeatIndicator(HBox[] rows) {
-		Circle[] balls = new Circle[ selectNote.getValue() ];
+		Circle[] balls = new Circle[ getBeatCount() ];
 		int idx = 0;
 		for(HBox row : rows) {
 			ObservableList<Node> list = row.getChildren();
@@ -301,7 +311,30 @@ public class Controller implements Initializable {
 	}
 
 	public void setIsAccent(int idx, boolean newValue) {
-		if(newValue) this.accentArray |= 1 << idx;
-		else this.accentArray &= ~(1 << idx) ;
+		if(newValue) accentArray |= 1L << idx;
+		else accentArray &= ~(1L << idx) ;
+	}
+	
+	public Label getTimeSignatureTime() {
+		return timeSignatureTime;
+	}
+
+	public Label getTimeSignatureBeat() {
+		return timeSignatureBeat;
+	}
+	
+	public int getBuravuraValue(String str) {
+		int n = 0;
+		for(char c : str.toCharArray()) {
+			n = (n<<3)+(n<<1) + buravura.get(c);
+		}
+		return n;
+	}
+	
+	public int getBeatCount() {
+		int note = selectNote.getValue();
+		int time = getBuravuraValue(timeSignatureTime.getText());
+		int beat = 4;//root.getBuravuraValue(timeSignatureBeat.getText());
+		return note * time/beat;
 	}
 }

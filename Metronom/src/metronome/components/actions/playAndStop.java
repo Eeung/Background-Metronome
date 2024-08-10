@@ -35,7 +35,7 @@ public class playAndStop {
 			playSound.setDisable(true);
 			stopSound.setDisable(false);
 			
-			SoundPlayer.setBit( selectBeat.getSelectionModel().getSelectedItem() );
+			SoundPlayer.setNote( selectBeat.getSelectionModel().getSelectedItem() );
 			SoundPlayer.setIndicator(root.getBeatIndicator( root.getIndicatorRows() ));
 			
 			SoundPlayer.setBpm( Integer.parseInt(bpmValue.getText()) / 100.0);

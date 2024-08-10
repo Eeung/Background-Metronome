@@ -6,10 +6,10 @@ import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-public class Beat{
+public class Sound{
 	private AudioClip normalBeat, accentBeat;
 	private MediaPlayer music;
-	Beat() {
+	Sound() {
 		new JFXPanel(); //이게 없으면 IllegalStateException 예외가 발생함
 			
 		String accentBeatFile = "/audio/Tick.wav";
