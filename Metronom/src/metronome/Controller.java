@@ -143,7 +143,6 @@ public class Controller implements Initializable {
 		timeClickJone.setOnMouseClicked(timeSignatureSetting.getTimeSignatureEvent(timeSignatureSetting.NUMERATOR, new String[]{"","","",""} , 1 ));
 		beatClickJone.setOnMouseClicked(timeSignatureSetting.getTimeSignatureEvent(timeSignatureSetting.DENOMINATOR, new String[]{"",""} ));
 		
-		
 		keyboardHook.addKeyListener(keyboardEvent.getInstance());
 		
 		metronomeVisualPane.widthProperty().addListener((observable, oldValue, newValue) -> indicatorSetting.adjustBallSizes( getIndicatorRows() ));

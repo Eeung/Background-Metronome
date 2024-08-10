@@ -18,7 +18,7 @@ public class SoundPlayer{
 	private static int offset = 0;
 	private static Sound sound = new Sound();
 	private static int beat_sequence = -1, beat_count = -1;
-	private static int note, beat=4, time;
+	private static int note, beat=4, time=4;
 	
 	private static ScheduledExecutorService beatExecutor = Executors.newSingleThreadScheduledExecutor();
 	private static ScheduledFuture<?> beatScheduled;
