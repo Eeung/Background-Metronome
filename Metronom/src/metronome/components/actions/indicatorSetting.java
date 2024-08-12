@@ -34,9 +34,7 @@ public class indicatorSetting {
 		return blur.getInstance();
 	}
 	
-	public static void rebuildIndicator() {
-		int count = root.getBeatCount();
-		
+	public static void rebuildIndicator(int count) {		
 		int mode = 0;
 		indicatorCol.getChildren().clear();
 		indicatorCol.getChildren().add(createHBox());
@@ -67,6 +65,7 @@ public class indicatorSetting {
         }
         
         adjustBallSizes(rows);
+        SoundPlayer.setIndicator( root.getBeatIndicator(rows) );
 	}
 	//주황색 #a3630c -> #ff940c
 	//노란색 #a39122 -> #ffdf22
@@ -128,7 +127,8 @@ public class indicatorSetting {
 		@Override
 		public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 			if(!(newValue && root.isPlayed())) return;
-			root.getBeatIndicator( root.getIndicatorRows() )[SoundPlayer.getBeat_sequence()].requestFocus();
+			int idx = SoundPlayer.getBeat_sequence();
+			if(idx>-1) root.getBeatIndicator( root.getIndicatorRows() )[idx].requestFocus();
 		}
 		
 		//Singleton Pattern

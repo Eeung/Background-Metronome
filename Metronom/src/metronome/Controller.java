@@ -147,6 +147,8 @@ public class Controller implements Initializable {
 		
 		metronomeVisualPane.widthProperty().addListener((observable, oldValue, newValue) -> indicatorSetting.adjustBallSizes( getIndicatorRows() ));
 		metronomeVisualPane.heightProperty().addListener((observable, oldValue, newValue) -> indicatorSetting.adjustBallSizes( getIndicatorRows() ));
+		
+		//대망의 음악모드 설정
 	}
 	
 	public Controller() {
@@ -333,7 +335,8 @@ public class Controller implements Initializable {
 	public int getBeatCount() {
 		int note = selectNote.getValue();
 		int time = getBuravuraValue(timeSignatureTime.getText());
-		int beat = 4;//root.getBuravuraValue(timeSignatureBeat.getText());
+		int beat = getBuravuraValue(timeSignatureBeat.getText());
+		if((note * time)%beat > 0) return -1;
 		return note * time/beat;
 	}
 }

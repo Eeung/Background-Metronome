@@ -2,7 +2,6 @@ package metronome.components.actions;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.layout.HBox;
 import metronome.Controller;
 import metronome.sound.SoundPlayer;
 
@@ -16,10 +15,13 @@ public class noteSetting  {
 	private static class select implements ChangeListener<Integer> {
 		@Override
 		public void changed(ObservableValue<? extends Integer> observable, Integer oldValue, Integer newValue) {
-			indicatorSetting.rebuildIndicator();
-	        
-	        HBox[] rows = root.getIndicatorRows();
-			SoundPlayer.setIndicator( root.getBeatIndicator(rows) );
+			int beatCount = root.getBeatCount();
+			if(beatCount == -1) {
+				root.getSelectBeat().getSelectionModel().select(oldValue);
+				beatCount = root.getBeatCount();
+			}
+			
+			indicatorSetting.rebuildIndicator(beatCount);
 			SoundPlayer.setNote(newValue);
 		}
 		

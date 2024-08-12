@@ -16,8 +16,9 @@ public class SoundPlayer{
 	private static int pre_offset = Integer.MIN_VALUE;
 
 	private static int offset = 0;
+	private static int fast_retry = 0;
 	private static Sound sound = new Sound();
-	private static int beat_sequence = -1, beat_count = -1;
+	private static int beat_sequence = 0, beat_count = -1;
 	private static int note, beat=4, time=4;
 	
 	private static ScheduledExecutorService beatExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -30,13 +31,12 @@ public class SoundPlayer{
 		
 		long nanoPeriod = (long) (60_000_000_000L/(bpm* note/beat ));// 60초 / (bpm*노트/박자) -> 60초 / (120* 6비트/4분음표) = 1초
 		play = () -> {
-			beat_sequence++;
 			beat_sequence %= beat_count;
 			sound.play( root.isAccent(beat_sequence) );
-			Platform.runLater( () -> indicator[beat_sequence].requestFocus() );
+			Platform.runLater( () -> indicator[beat_sequence++].requestFocus() );
 		};
-		beatScheduled = beatExecutor.scheduleAtFixedRate(play, offset*1_000_000L, nanoPeriod, TimeUnit.NANOSECONDS);
-		
+		beatScheduled = beatExecutor.scheduleAtFixedRate(play, (offset-fast_retry)*1_000_000L, nanoPeriod, TimeUnit.NANOSECONDS);
+		fast_retry = 0;
 		pre_offset = offset;
 		offset = 0;
 	}
@@ -44,7 +44,7 @@ public class SoundPlayer{
 	public static void scheduleCancel() {
 		beatScheduled.cancel(true);
 		beatScheduled = null;
-		beat_sequence = -1;
+		beat_sequence = 0;
 		pre_offset = Integer.MIN_VALUE;
 		System.out.println("종료 됨!");
 	}
@@ -91,17 +91,21 @@ public class SoundPlayer{
 		setBeatCount();
 		//매트로놈 중간에 비트를 바꿀 때,
 		if(beatScheduled != null) {
-			beat_sequence *= ((beat_sequence - beat_count) >> 31) & 1;
-			indicator[beat_sequence].requestFocus();
+			int zeroOrOne = ((beat_sequence - beat_count) >> 31) & 1;
+			beat_sequence *= zeroOrOne;
+			indicator[beat_sequence-zeroOrOne].requestFocus();
 			scheduleRestart();
 		}
 	}
 	
 	public static void setBeat(int b) {
-		//beat = b;
+		beat = b;
 		setBeatCount();
 		//매트로놈 중간에 비트를 바꿀 때,
 		if(beatScheduled != null) {
+			int zeroOrOne = ((beat_sequence - beat_count) >> 31) & 1;
+			beat_sequence *= zeroOrOne;
+			indicator[beat_sequence-zeroOrOne].requestFocus();
 		}
 	}
 	
@@ -110,6 +114,9 @@ public class SoundPlayer{
 		setBeatCount();
 		//매트로놈 중간에 비트를 바꿀 때,
 		if(beatScheduled != null) {
+			int zeroOrOne = ((beat_sequence - beat_count) >> 31) & 1;
+			beat_sequence *= zeroOrOne;
+			indicator[beat_sequence-zeroOrOne].requestFocus();
 		}
 	}
 	
@@ -118,7 +125,11 @@ public class SoundPlayer{
 	}
 	
 	public static int getBeat_sequence() {
-		int result = (beat_sequence)%beat_count;
+		int result = (beat_sequence-1)%beat_count;
 		return result;
+	}
+	
+	public static void activateFastRetry() {
+		fast_retry = 1000;
 	}
 }

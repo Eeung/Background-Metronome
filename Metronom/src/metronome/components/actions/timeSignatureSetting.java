@@ -39,26 +39,40 @@ public class timeSignatureSetting {
 		@Override
 		public void handle(MouseEvent arg0) {
 			if(timeSignature == null) return;
-			
+			int beatCount = 0;
+				
 			String value = null;
 			switch(arg0.getButton()) {
 			case PRIMARY:
 				value = list.next();
 				timeSignature.setText( value );
+				beatCount = root.getBeatCount();
+				if(beatCount == -1) {
+					value = list.next();
+					timeSignature.setText( value );
+					beatCount = root.getBeatCount();
+				}
 				break;
 			case SECONDARY:
 				value = list.previous();
 				timeSignature.setText( value );
+				beatCount = root.getBeatCount();
+				if(beatCount == -1) {
+					value = list.previous();
+					timeSignature.setText( value );
+					beatCount = root.getBeatCount();
+				}
 				break;
 			default:
-				break;
 			}
+			
+			indicatorSetting.rebuildIndicator(beatCount);
 			
 			switch(id) {
 			case 0 -> SoundPlayer.setTime( root.getBuravuraValue(value) );
-			//case 1 -> SoundPlayer.setBeat( root.getBuravuraValue(value) );
+			case 1 -> SoundPlayer.setBeat( root.getBuravuraValue(value) );
 			}
-			indicatorSetting.rebuildIndicator();
+			
 			// 사운드플레이어에서 beat, time 설정 및 인디케이터 업데이트
 		}
 		

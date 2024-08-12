@@ -42,9 +42,12 @@ public class keyboardEvent implements GlobalKeyListener {
 				long current = System.currentTimeMillis();
 				Platform.runLater(() -> offsetText.setText(Long.toString(current-root.getStartTime())) );
 				SoundPlayer.setOffset( (int)(current-root.getStartTime()) );
-			}
-			if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {	// esc
+			} else if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {	// esc
 				stopSound.fire();
+			} else if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_F5) {
+				stopSound.fire();
+				SoundPlayer.activateFastRetry();
+				playSound.fire();
 			}
 		} else {
 			if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_RETURN) {	// ctrl + enter
