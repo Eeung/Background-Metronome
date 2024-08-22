@@ -18,23 +18,39 @@ public class indicatorSetting {
 	private static VBox indicatorCol = root.getIndicatorCol();
 	private static FlowPane metronomeVisualPane = root.getMetronomeVisualPane();
 	
+	private final static Color activated_orange = Color.web("#ff940c");
+	private final static Color deactivated_orange = Color.web("#a3630c");
+	private final static Color activated_yellow = Color.web("#ffdf22");
+	private final static Color deactivated_yellow = Color.web("#a39122");
+	
+	/** Get the event to turn the lights on and off on the accent beat */
 	public static accent getAccentBeatEvent(Circle c) {
 		return new accent(c);
 	}
 	
+	/** Get the event to turn the lights on and off on the normal beat */
 	public static normal getNormalBeatEvent(Circle c) {
 		return new normal(c);
 	}
 	
+	/** Get the event to change the type of clicked beat */
 	public static change getChangeBeatEvent(Circle c) {
 		return new change(c);
 	}
 	
+	/** Get the event that returns focus to beats When another component takes it. */
 	public static blur getBlurEvent() {
 		return blur.getInstance();
 	}
 	
-	public static void rebuildIndicator(int count) {		
+	/**
+	 * Rebuild beat indicator when you change note or time signature.
+	 * 
+	 * @param 
+	 * count The beat count (note * time signature).
+	 */
+	public static void rebuildIndicator(int count) {
+		/** Create rows according to beat count. */
 		int mode = 0;
 		indicatorCol.getChildren().clear();
 		indicatorCol.getChildren().add(createHBox());
@@ -48,6 +64,7 @@ public class indicatorSetting {
 			}
 		}
 		
+		/** Create balls and put event in them. */
 		HBox[] rows = root.getIndicatorRows();
         for (int i = 0; i < count; i++) {
             Circle ball = new Circle(30);
@@ -57,48 +74,48 @@ public class indicatorSetting {
             else ball.focusedProperty().addListener(indicatorSetting.getNormalBeatEvent(ball));
             ball.setOnMouseClicked(indicatorSetting.getChangeBeatEvent(ball));
 
-            if (mode == 1)
-            	rows[(( (count+1)/2-1-i) >> 31) & 1].getChildren().add(ball);
-            else if (mode == 0)
-            	rows[0].getChildren().add(ball);
+            /** Put each ball in the right line. */
+            if (mode == 1) rows[(( (count+1)/2-1-i) >> 31) & 1].getChildren().add(ball);
+            else if (mode == 0) rows[0].getChildren().add(ball);
             else rows[i / (count/4)].getChildren().add(ball);
         }
         
         adjustBallSizes(rows);
         SoundPlayer.setIndicator( root.getBeatIndicator(rows) );
 	}
-	//주황색 #a3630c -> #ff940c
-	//노란색 #a39122 -> #ffdf22
+	
+	/** The event of turning on/off accent beat. */
 	private static class accent implements ChangeListener<Boolean> {
 		private Circle ball;
 		
 		@Override
 		public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-			if (newValue) ball.setFill(Color.web("#ff940c"));
-            else ball.setFill(Color.web("#a3630c"));
+			if (newValue) ball.setFill(activated_orange);
+            else ball.setFill(deactivated_orange);
 		}
 		
 		private accent(Circle c) {
 			ball = c;
-			ball.setFill(Color.web("#a3630c"));
+			ball.setFill(deactivated_orange);
 		}
 	}
-	
+	/** The event of turning on/off normal beat. */
 	private static class normal implements ChangeListener<Boolean> {
 		private Circle ball;
 		
 		@Override
 		public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-			if (newValue) ball.setFill(Color.web("#ffdf22"));
-            else ball.setFill(Color.web("#a39122"));
+			if (newValue) ball.setFill(activated_yellow);
+            else ball.setFill(deactivated_yellow);
 		}
 		
 		private normal(Circle c) {
 			ball = c;
-			ball.setFill(Color.web("#a39122"));
+			ball.setFill(deactivated_yellow);
 		}
 	}
 	
+	/** The event of changing beat type. */
 	private static class change implements EventHandler<MouseEvent> {
 		private Circle ball;
 		private int idx;
@@ -107,13 +124,13 @@ public class indicatorSetting {
 			if(root.isAccent(idx)) {
 				root.setIsAccent(idx, false);
 				ball.focusedProperty().addListener( getNormalBeatEvent(ball) );
-				if (root.isPlayed() && SoundPlayer.getBeat_sequence() == idx) ball.setFill(Color.web("#ffdf22"));
-				else ball.setFill(Color.web("#a39122"));
+				if (root.isPlayed() && SoundPlayer.getBeat_sequence() == idx) ball.setFill(activated_yellow);
+				else ball.setFill(deactivated_yellow);
 			} else {
 				root.setIsAccent(idx, true);
 				ball.focusedProperty().addListener( getAccentBeatEvent(ball) );
-				if (root.isPlayed() && SoundPlayer.getBeat_sequence() == idx) ball.setFill(Color.web("#ff940c"));
-				else ball.setFill(Color.web("#a3630c"));
+				if (root.isPlayed() && SoundPlayer.getBeat_sequence() == idx) ball.setFill(activated_orange);
+				else ball.setFill(deactivated_orange);
 			}
 		}
 		
@@ -123,6 +140,7 @@ public class indicatorSetting {
 		}
 	}
 	
+	/** The event of returning the focus to beat indicator. */
 	private static class blur implements ChangeListener<Boolean>{
 		@Override
 		public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {

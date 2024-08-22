@@ -12,55 +12,59 @@ public class timeSignatureSetting {
 	public static final int NUMERATOR = 0;
 	public static final int DENOMINATOR = 1;
 	
+	/** Get the event of selecting the numerator of the time signature. */
 	public static signature getTimeSignatureEvent(int id, String[] integers) {
 		return new signature(id, integers);
 	}
+	/** Get the event of selecting the denominator of the time signature. */
 	public static signature getTimeSignatureEvent(int id, String[] integers, int startIdx) {
 		return new signature(id, integers, startIdx);
 	}
 	
+	/** The event of adjusting the time signature */
 	private static class signature implements EventHandler<MouseEvent> {
 		private CircularList<String> list;
-		private Label timeSignature;
-		private int id;
+		private Label timeSignaturePart;
+		private final int id;
+		
 		public signature(int id, String[] arr) {
 			this(id,arr,0);
 		}
 		public signature(int id, String[] arr, int startIdx) {
 			list = new CircularList<String>(arr);
 			switch(id) {
-			case NUMERATOR -> timeSignature = root.getTimeSignatureTime();
-			case DENOMINATOR -> timeSignature = root.getTimeSignatureBeat();
+			case NUMERATOR -> timeSignaturePart = root.getTimeSignatureTime();
+			case DENOMINATOR -> timeSignaturePart = root.getTimeSignatureBeat();
 			}
 			this.id = id;
-			list.setIndex(startIdx);
+			list.get(startIdx);
 		}
 		
 		@Override
 		public void handle(MouseEvent arg0) {
-			if(timeSignature == null) return;
+			if(timeSignaturePart == null) return;
 			int beatCount = 0;
 				
 			String value = null;
 			switch(arg0.getButton()) {
 			case PRIMARY:
 				value = list.next();
-				timeSignature.setText( value );
+				timeSignaturePart.setText( value );
 				beatCount = root.getBeatCount();
 				if(beatCount == -1) {
 					value = list.next();
-					timeSignature.setText( value );
-					beatCount = root.getBeatCount();
+					timeSignaturePart.setText( value );
+					return;
 				}
 				break;
 			case SECONDARY:
 				value = list.previous();
-				timeSignature.setText( value );
+				timeSignaturePart.setText( value );
 				beatCount = root.getBeatCount();
 				if(beatCount == -1) {
 					value = list.previous();
-					timeSignature.setText( value );
-					beatCount = root.getBeatCount();
+					timeSignaturePart.setText( value );
+					return;
 				}
 				break;
 			default:
@@ -72,8 +76,6 @@ public class timeSignatureSetting {
 			case 0 -> SoundPlayer.setTime( root.getBuravuraValue(value) );
 			case 1 -> SoundPlayer.setBeat( root.getBuravuraValue(value) );
 			}
-			
-			// 사운드플레이어에서 beat, time 설정 및 인디케이터 업데이트
 		}
 		
 	}

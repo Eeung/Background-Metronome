@@ -8,35 +8,62 @@ public class CircularList<E> extends ArrayList<E> {
 	private static final long serialVersionUID = 1L;
 	private int current_index = 0;
 	
+	/**
+	 * Constructs an empty list with an initial capacity of ten.
+	 */
 	public CircularList() {
         super();
     }
-	
-	public CircularList(Collection<? extends E> list) {
+	/**
+	 * Constructs a list containing the elements of the specified collection, in the order they are returned by the collection's iterator.
+	 * 
+	 * @param 
+	 * list the collection whose elements are to be placed into this list
+	 * @throws 
+	 * NullPointerException if the specified collection is null
+	 */
+	public CircularList(Collection<? extends E> list) throws NullPointerException {
         super(list);
     }
 	
+	/**
+	 * Construct a list containing elements in an array in index order.
+	 * 
+	 * @param 
+	 * arr the array whose elements are to be placed into this array
+	 * @throws 
+	 * NullPointerException if the array is null
+	 */
 	@SafeVarargs
-	public CircularList(E... arr) {
+	public CircularList(E... arr) throws NullPointerException {
 		super( Arrays.asList(arr) );
 	}
 	
-	/**
-	 * 순환을 시작할 인덱스를 설정합니다.
-	 * @param
-	 * 순환을 시작할 인덱스
-	 */
-	public void setIndex(int idx) {
-		current_index = idx;
+	@Override
+	public E get(int index) {
+		current_index = index;
+		return super.get(index);
+	}
+	
+	@Override
+	public E getFirst() {
+		current_index = 0;
+		return super.getFirst();
+	}
+	
+	@Override
+	public E getLast() {
+		current_index = size()-1;
+		return super.getLast();
 	}
 	
     /**
-     * 이전에 반환된 요소의 다음 인덱스에 있는 요소를 반환합니다.\n
-     * 사용한 적이 없다면 처음 요소를 반환합니다.\n
-     * 리스트의 끝에 도달하면 처음으로 돌아옵니다.
+     * Returns the element in the next index of the previously returned element. 
+     * Returns the first element if it has never been used. 
+     * When you reach the end of the list, you return to the start.
      * 
      * @return
-     * 전에 반환된 요소의 다음 요소
+     * Next element of previously returned element
      */
     public E next() {
     	int size = size();
@@ -45,13 +72,13 @@ public class CircularList<E> extends ArrayList<E> {
     }
     
     /**
-     * 해당 인덱스의 다음 요소를 반환합니다.\n
-     * 리스트의 끝에 도달하면 처음으로 돌아옵니다.
+     * Returns the next element of that index. 
+     * When you reach the end of the list, you will return to the start.
      * 
      * @param
-     * 시작할 인덱스
+     * Previous index of the element to return
      * @return
-     * 해당 인덱스의 다음 요소
+     * Next element of that index
      */
     public E next(int index) {
     	current_index = index;
@@ -59,12 +86,12 @@ public class CircularList<E> extends ArrayList<E> {
     }
     
     /**
-     * 이전에 반한된 요소의 이전 인덱스에 있는 요소를 반환합니다.
-     * 사용한 적이 없다면 처음 요소를 반환합니다.
-     * 리스트의 처음에 도달하면 끝으로 돌아옵니다.
+     * Returns the element in the previous index of the previously returned element. 
+     * Returns the first element if never used. 
+     * When you reach the start of the list, you return to the end.
      * 
      * @return
-     * 전에 반환된 요소의 이전 요소
+     * Previous element of previously returned element
      */
     public E previous() {
     	int size = size();
@@ -73,13 +100,13 @@ public class CircularList<E> extends ArrayList<E> {
     }
     
     /**
-     * 해당 인덱스의 이전 요소를 반환합니다.\n
-     * 리스트의 끝에 도달하면 처음으로 돌아옵니다.
+     * Returns the previous element of that index.
+     * When you reach the end of the list, you will return to the beginning.
      * 
      * @param
-     * 시작할 인덱스
+     * Next index of the element to return
      * @return
-     * 해당 인덱스의 이전 요소
+     * Previous element of previously returned element
      */
     public E previous(int index) {
     	current_index = index;

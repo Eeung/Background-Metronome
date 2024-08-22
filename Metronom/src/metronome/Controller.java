@@ -25,6 +25,7 @@ import metronome.components.actions.playAndStop;
 import metronome.components.actions.timeSignatureSetting;
 
 public class Controller implements Initializable {
+	/**Instances of singleton pattern */
 	private static Controller instance;
 	
 	@FXML
@@ -71,9 +72,9 @@ public class Controller implements Initializable {
 	private Slider bpmSlider;
 	@FXML
 	private Slider volumeSlider;
-	@FXML
+	/** To store bpm without errors */	@FXML
 	private Label bpmValue;
-	@FXML
+	/** Actual bpm figures displayed */	@FXML 
 	private Label bpmText;
 	@FXML
 	private Label offsetText;
@@ -87,27 +88,36 @@ public class Controller implements Initializable {
 	private Rectangle beatClickJone;
 	
 	private Stage stage;
+	/** Window's Focus Status */
 	private boolean isFocused = false;
 	
+	/** Sound Playback Status */
 	private boolean isPlayed = false;
+	/** Start time in milliseconds when play sound */
 	private long startTime;
 	
+	/** The event to receive keyboard input in background  */
 	private GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
 	
+	/** The variable for bitmasking the type of beat indicator */
 	private long accentArray = 0x00_00_00_00_00_00_00_01L;
+	/** Buravura font to integer */
 	private static HashMap<Character,Integer> buravura = new HashMap<>(10);
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		//ObservableList<Integer> notes = FXCollections.observableArrayList(new Integer[] {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32});
+		/** Types of notes (Influenced by speed) */
 		ObservableList<Integer> notes = FXCollections.observableArrayList(new Integer[] {4,6,8,12,16,24,32});
+		/** Setting ComboBox */
 		selectNote.setItems(notes);
 		
-		//표기 bpm 설정
+		/** Convert bpm from int to float text */
 		int bpm = Integer.parseInt( bpmValue.getText() );
 		StringBuilder sb = new StringBuilder();
 		sb.append( bpm/100 );
 		int remain = bpm%100;
+		/** decimal places */
 		if(remain>0) {
 			double num = remain/100.0;
 			String str = Double.toString(num);
@@ -115,18 +125,18 @@ public class Controller implements Initializable {
 		}
 		bpmText.setText( sb.toString() );
 		
-		//각 컴포넌트의 이벤트 설정
+		/** Set events for each component */
 		playSound.setOnAction( playAndStop.getPlay() );
 		stopSound.setOnAction( playAndStop.getStop() );
 		
-		bpmLessDecrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.LessDecrease) );
-		bpmDecrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.NormalDecrease) );
-		bpmMoreDecrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.MoreDecrease) );
-		bpmLessIncrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.LessIncrease) );
-		bpmIncrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.NormalIncrease) );
-		bpmMoreIncrease.setOnMouseClicked( bpmSetting.getButtonEvent(bpmSetting.MoreIncrease) );
+		bpmLessDecrease.setOnMouseClicked( bpmSetting.getButtonEvent( bpmLessDecrease ) );
+		bpmDecrease.setOnMouseClicked( bpmSetting.getButtonEvent( bpmDecrease ) );
+		bpmMoreDecrease.setOnMouseClicked( bpmSetting.getButtonEvent( bpmMoreDecrease ) );
+		bpmLessIncrease.setOnMouseClicked( bpmSetting.getButtonEvent( bpmLessIncrease ) );
+		bpmIncrease.setOnMouseClicked( bpmSetting.getButtonEvent( bpmIncrease ) );
+		bpmMoreIncrease.setOnMouseClicked( bpmSetting.getButtonEvent( bpmMoreIncrease ) );
 		
-		bpmSlider.valueProperty().addListener( bpmSetting.getSliderEvent() );
+		bpmSlider.valueProperty().addListener( bpmSetting.getSliderEvent( bpmSlider ) );
 		bpmSlider.focusedProperty().addListener( indicatorSetting.getBlurEvent() );
 		
 		offsetDecrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.NormalDecrease) );
@@ -134,11 +144,11 @@ public class Controller implements Initializable {
 		offsetIncrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.NormalIncrease) );
 		offsetMoreIncrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.MoreIncrease) );
 		
-		volumeSlider.valueProperty().addListener( VolumeSetting.getSliderEvnet() );
+		volumeSlider.valueProperty().addListener( VolumeSetting.getSliderEvnet(volumeSlider) );
 		volumeSlider.focusedProperty().addListener( indicatorSetting.getBlurEvent() );
 		
 		selectNote.valueProperty().addListener( noteSetting.getBeatSelectEvent() );
-		selectNote.getSelectionModel().select(0);
+		selectNote.getSelectionModel().select( Integer.valueOf(4) );
 		
 		timeClickJone.setOnMouseClicked(timeSignatureSetting.getTimeSignatureEvent(timeSignatureSetting.NUMERATOR, new String[]{"","","",""} , 1 ));
 		beatClickJone.setOnMouseClicked(timeSignatureSetting.getTimeSignatureEvent(timeSignatureSetting.DENOMINATOR, new String[]{"",""} ));
@@ -164,7 +174,7 @@ public class Controller implements Initializable {
 	
 	public void setStage(Stage stage) {
         this.stage = stage;
-        // 창의 포커스 상태를 감지하는 리스너 추가
+        /** Listener to detect the window's focus status */
         this.stage.focusedProperty().addListener((observable,oldValue,newValue) -> {
             if (newValue) isFocused = true;
             else isFocused = false;
@@ -299,9 +309,8 @@ public class Controller implements Initializable {
 		int idx = 0;
 		for(HBox row : rows) {
 			ObservableList<Node> list = row.getChildren();
-			for(int i=0;i<list.size();i++) {
+			for(int i=0;i<list.size();i++)
 				balls[idx++] = (Circle)list.get(i);
-			}
 		}
 		return balls;
 	}

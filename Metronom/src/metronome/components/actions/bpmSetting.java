@@ -10,26 +10,86 @@ import javafx.scene.input.MouseEvent;
 import metronome.Controller;
 import metronome.sound.SoundPlayer;
 
-public class bpmSetting {	
-	public static final int LessDecrease = -1;
-	public static final int NormalDecrease = -2;
-	public static final int MoreDecrease = -3;
-	public static final int LessIncrease = 1;
-	public static final int NormalIncrease = 2;
-	public static final int MoreIncrease = 3;
-	
+public class bpmSetting {
 	private static final Controller root = Controller.getInstance();
 	
 	private static Label bpmValue = root.getBpmValue();
 	private static Label bpmText = root.getBpmText();
 	private static Slider bpmSlider = root.getBpmSlider();
 	
-	public static bpmChange getButtonEvent(int mode) {
-		bpmChange a = new bpmChange(mode);
-		return a;
+	/** Get event instances of bpm increase/decrease buttons. */
+	public static bpmChange getButtonEvent(Button bpmButton) {
+		return new bpmChange(bpmButton);
 	}
-	public static sliderEvent getSliderEvent() {
-		return sliderEvent.getInstance();
+	/** Get event instances of bpm slider. */
+	public static sliderEvent getSliderEvent(Slider slider) {
+		return new sliderEvent(slider);
+	}
+	
+	/** The event that Bpm is increased or decreased */
+	private static class bpmChange implements EventHandler<MouseEvent>{
+		private Button bpmChange;
+		
+		bpmChange(Button bpm) {
+			bpmChange = bpm;
+		}
+		
+		@Override
+		public void handle(MouseEvent arg0) {
+			if(bpmChange == null) return;
+			
+			int bpm = Integer.parseInt(bpmValue.getText());
+			int weight = (int) (Double.parseDouble( bpmChange.getText() )*100);
+			
+			bpm += weight;
+			bpm = rangeCheck(bpm, 1, 100000);
+			
+			/** Convert bpm from int to float text */
+			StringBuilder sb = new StringBuilder();
+			sb.append( bpm/100 );
+			int remain = bpm%100;
+			/** decimal places */
+			if(remain>0) {
+				double num = remain/100.0;
+				String str = Double.toString(num);
+				sb.append(str.substring(1));
+			}
+			
+			bpmValue.setText( Integer.toString(bpm) );
+			SoundPlayer.setBpm(bpm/100.0);
+			bpmText.setText( sb.toString() );
+			
+			/** Synchronizing Bpm and bpmSlider*/
+			bpmSlider.setValue(bpm/100.0);
+		}
+		
+		private int rangeCheck(int target, int min, int max) {
+			target = target<min ? min : target;
+			target = target>max ? max : target;
+			return target;
+		}
+		
+	}
+
+	/** The event to control Bpm with slider */
+	private static class sliderEvent implements ChangeListener<Number> {
+		private Slider bpmSlider;
+		@Override
+		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+			if(!bpmSlider.isValueChanging()) return;
+			
+			int result = newValue.intValue();
+			
+			bpmValue.setText( Integer.toString(result*100) );
+			SoundPlayer.setBpm(result);
+			bpmText.setText( Integer.toString(result) );
+			
+			//System.out.println("Slider Value Changed: " + result);
+		}
+
+		sliderEvent(Slider slider) {
+			bpmSlider = null;
+		}
 	}
 	
 	public static String IncreaseStepSize(Button b) {
@@ -52,77 +112,5 @@ public class bpmSetting {
 		if (num>0) sb.insert(0, '+');
 		return sb.toString();
 	}
-	
-	private static class bpmChange implements EventHandler<MouseEvent>{
-		private Button bpmChange;
-		
-		public bpmChange(int mode) {
-			switch(mode) {
-			case LessDecrease -> bpmChange = root.getBpmLessDecrease();
-			case NormalDecrease -> bpmChange = root.getBpmDecrease();
-			case MoreDecrease -> bpmChange = root.getBpmMoreDecrease();
-			case LessIncrease -> bpmChange = root.getBpmLessIncrease();
-			case NormalIncrease -> bpmChange = root.getBpmIncrease();
-			case MoreIncrease -> bpmChange = root.getBpmMoreIncrease();
-			}
-		}
-		
-		@Override
-		public void handle(MouseEvent arg0) {
-			if(bpmChange == null) return;
-			
-			int bpm = Integer.parseInt(bpmValue.getText());
-			int weight = (int) (Double.parseDouble( bpmChange.getText() )*100);
-			
-			bpm += weight;
-			bpm = rangeCheck(bpm, 1, 100000);
-			
-			StringBuilder sb = new StringBuilder();
-			sb.append( bpm/100 );
-			int remain = bpm%100;
-			if(remain>0) {
-				double num = remain/100.0;
-				String str = Double.toString(num);
-				sb.append(str.substring(1));
-			}
-			
-			bpmValue.setText( Integer.toString(bpm) );
-			SoundPlayer.setBpm(bpm/100.0);
-			bpmText.setText( sb.toString() );
-			
-			bpmSlider.setValue(bpm/100.0);
-		}
-		
-		private int rangeCheck(int target, int min, int max) {
-			target = target<min ? min : target;
-			target = target>max ? max : target;
-			return target;
-		}
-		
-	}
-
-	private static class sliderEvent implements ChangeListener<Number> {
-		@Override
-		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-			if(!bpmSlider.isValueChanging()) return;
-			
-			int result = newValue.intValue();
-			
-			bpmValue.setText( Integer.toString(result*100) );
-			SoundPlayer.setBpm(result);
-			bpmText.setText( Integer.toString(result) );
-			
-			System.out.println("Slider Value Changed: " + result);
-		}
-		
-		//Singleton Pattern
-		static sliderEvent I = new sliderEvent();
-		public static sliderEvent getInstance() {
-			return I;
-		}
-		private sliderEvent() {
-		}
-	}
-	
 }
 

@@ -8,48 +8,32 @@ import javafx.scene.input.MouseEvent;
 import metronome.Controller;
 import metronome.sound.SoundPlayer;
 
-public class offsetSetting {	
+public class offsetSetting {
+	private static final Controller root = Controller.getInstance();
+	
+	private static Label offsetText = root.getOffsetText();
+	
 	public static final int NormalDecrease = -1;
 	public static final int MoreDecrease = -10;
 	public static final int NormalIncrease = 1;
 	public static final int MoreIncrease = 10;
+	
 	public static final int MorerDecrease = -100;
 	public static final int MorestDecrease = -1000;
 	public static final int MorerIncrease = 100;
 	public static final int MorestIncrease = 1000;
 	
-	private static final Controller root = Controller.getInstance();
-	
-	private static Label offsetText = root.getOffsetText();
-	
-	
+	/** Get event instances of offset increase/decrease buttons. */
 	public static offsetChange getButtonEvent(int mode) {
-		offsetChange a = new offsetChange(mode);
-		return a;
+		return new offsetChange(mode);
 	}
 	
-	public static String IncreaseStepSize(Button b) {
-		int weight = Integer.parseInt(b.getText());
-		weight *= 100;
-		return prependPlus(weight);
-	}
-	public static String DecreaseStepSize(Button b) {
-		int weight = Integer.parseInt(b.getText());
-		weight /= 100;
-		return prependPlus(weight);
-	}
-	private static String prependPlus(int num) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(num);
-		if (num>0) sb.insert(0, '+');
-		return sb.toString();
-	}
-	
+	/** The event that offset is increased or decreased */
 	private static class offsetChange implements EventHandler<MouseEvent>{
 		private Button offsetChange;
 		private int step;
 		
-		public offsetChange(int mode) {
+		offsetChange(int mode) {
 			step = mode;
 			switch(mode) {
 			case NormalDecrease -> offsetChange = root.getBpmDecrease();
@@ -87,4 +71,22 @@ public class offsetSetting {
 		}
 		
 	}
+	
+	public static String IncreaseStepSize(Button b) {
+		int weight = Integer.parseInt(b.getText());
+		weight *= 100;
+		return prependPlus(weight);
+	}
+	public static String DecreaseStepSize(Button b) {
+		int weight = Integer.parseInt(b.getText());
+		weight /= 100;
+		return prependPlus(weight);
+	}
+	private static String prependPlus(int num) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(num);
+		if (num>0) sb.insert(0, '+');
+		return sb.toString();
+	}
+	
 }
