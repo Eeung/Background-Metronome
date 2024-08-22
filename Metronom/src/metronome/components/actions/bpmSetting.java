@@ -88,7 +88,7 @@ public class bpmSetting {
 		}
 
 		sliderEvent(Slider slider) {
-			bpmSlider = null;
+			bpmSlider = slider;
 		}
 	}
 	

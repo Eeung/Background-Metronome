@@ -20,6 +20,7 @@ import metronome.components.actions.VolumeSetting;
 import metronome.components.actions.noteSetting;
 import metronome.components.actions.bpmSetting;
 import metronome.components.actions.indicatorSetting;
+import metronome.components.actions.modeSelecting;
 import metronome.components.actions.offsetSetting;
 import metronome.components.actions.playAndStop;
 import metronome.components.actions.timeSignatureSetting;
@@ -67,6 +68,8 @@ public class Controller implements Initializable {
 	@FXML
 	private Button stopSound;
 	@FXML
+	private Button browseFile;
+	@FXML
 	private ComboBox<Integer> selectNote;
 	@FXML
 	private Slider bpmSlider;
@@ -78,6 +81,8 @@ public class Controller implements Initializable {
 	private Label bpmText;
 	@FXML
 	private Label offsetText;
+	@FXML
+	private Label SelectedMusic;
 	@FXML
 	private Label timeSignatureTime;
 	@FXML
@@ -159,6 +164,8 @@ public class Controller implements Initializable {
 		metronomeVisualPane.heightProperty().addListener((observable, oldValue, newValue) -> indicatorSetting.adjustBallSizes( getIndicatorRows() ));
 		
 		//대망의 음악모드 설정
+		selectMedia.setOnAction( modeSelecting.getModeSelectEvent(mediaVisualPane, mediaControlPane) );
+		selectMetronome.setOnAction( modeSelecting.getModeSelectEvent(metronomeVisualPane, metronomeControlPane) );
 	}
 	
 	public Controller() {
