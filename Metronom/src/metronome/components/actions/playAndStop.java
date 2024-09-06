@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import metronome.Controller;
 import metronome.sound.MusicStrategy;
@@ -15,8 +14,6 @@ public class playAndStop {
 	private static Button playSound = root.getPlaySound();
 	private static Button stopSound = root.getStopSound();
 	private static VBox indicatorCol = root.getIndicatorCol();
-	private static ToggleButton metronomeSelect = root.getSelectMetronome();
-	private static ToggleButton mediaSelect = root.getSelectMedia();
 	private static MusicStrategy player = root.getPlayer();
 
 	/** Get the event to play sound. */
@@ -36,9 +33,6 @@ public class playAndStop {
 			playSound.setDisable(true);
 			stopSound.setDisable(false);
 			
-			metronomeSelect.setDisable(true);
-			mediaSelect.setDisable(true);
-			
 			player.play();
 			root.setPlayed(true);
 			root.setStartTime( System.currentTimeMillis() );
@@ -57,9 +51,6 @@ public class playAndStop {
 		public void handle(ActionEvent arg0) {
 			playSound.setDisable(false);
 			stopSound.setDisable(true);
-			
-			metronomeSelect.setDisable(false);
-			mediaSelect.setDisable(false);
 			
 			player.stop();
 			Platform.runLater(() -> indicatorCol.requestFocus() );

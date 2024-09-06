@@ -4,13 +4,11 @@ import java.net.*;
 import java.util.*;
 
 import lc.kra.system.keyboard.GlobalKeyboardHook;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.*;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -41,17 +39,7 @@ public class Controller implements Initializable {
 	@FXML
 	private FlowPane metronomeVisualPane;
 	@FXML
-	private BorderPane mediaControlPane;
-	@FXML
-	private BorderPane metronomeControlPane;
-	@FXML
-	private FlowPane mediaVisualPane;
-	@FXML
 	private VBox indicatorCol;
-	@FXML
-	private ToggleButton selectMedia;
-	@FXML
-	private ToggleButton selectMetronome;
 	@FXML
 	private Button bpmLessDecrease;
 	@FXML
@@ -77,8 +65,6 @@ public class Controller implements Initializable {
 	@FXML
 	private Button stopSound;
 	@FXML
-	private Button browseFile;
-	@FXML
 	private ComboBox<Integer> selectNote;
 	@FXML
 	private Slider bpmSlider;
@@ -90,8 +76,6 @@ public class Controller implements Initializable {
 	private Label bpmText;
 	@FXML
 	private Label offsetText;
-	@FXML
-	private Label musicFilePath;
 	@FXML
 	private Label timeSignatureTime;
 	@FXML
@@ -171,13 +155,6 @@ public class Controller implements Initializable {
 		
 		metronomeVisualPane.widthProperty().addListener((observable, oldValue, newValue) -> indicatorSetting.adjustBallSizes( getIndicatorRows() ));
 		metronomeVisualPane.heightProperty().addListener((observable, oldValue, newValue) -> indicatorSetting.adjustBallSizes( getIndicatorRows() ));
-		
-		//대망의 음악모드 설정
-		selectMedia.setOnAction( modeSelecting.getModeSelectEvent(mediaVisualPane, mediaControlPane, MusicPlayer.getInstance()) );
-		selectMetronome.setOnAction( modeSelecting.getModeSelectEvent(metronomeVisualPane, metronomeControlPane, MetronomePlayer.getInstance()) );
-		
-		Platform.runLater(() -> browseFile.setOnAction(fileBrowsing.getFileBrowsing(stage)));
-		;
 	}
 	
 	public void setStage(Stage stage) {
@@ -188,27 +165,11 @@ public class Controller implements Initializable {
             else isFocused = false;
         });
     }
-	
-	public BorderPane getMediaControlPane() {
-		return mediaControlPane;
-	}
-	public BorderPane getMetronomeControlPane() {
-		return metronomeControlPane;
-	}
-	public FlowPane getMediaVisualPane() {
-		return mediaVisualPane;
-	}
 	public FlowPane getMetronomeVisualPane() {
 		return metronomeVisualPane;
 	}
 	public VBox getIndicatorCol() {
 		return indicatorCol;
-	}
-	public ToggleButton getSelectMedia() {
-		return selectMedia;
-	}
-	public ToggleButton getSelectMetronome() {
-		return selectMetronome;
 	}
 	public Button getBpmLessDecrease() {
 		return bpmLessDecrease;
@@ -336,8 +297,5 @@ public class Controller implements Initializable {
 		int beat = getBuravuraValue(timeSignatureBeat.getText());
 		if((note * time)%beat > 0) return -1;
 		return note * time/beat;
-	}
-	public Label getMusicFilePath() {
-		return musicFilePath;
 	}
 }
