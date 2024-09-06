@@ -3,9 +3,12 @@ package metronome.components.actions;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import metronome.Controller;
-import metronome.sound.SoundPlayer;
+import metronome.sound.MetronomeStrategy;
 
 public class noteSetting  {
+	private static final Controller root = Controller.getInstance();
+	
+	private static MetronomeStrategy player = (MetronomeStrategy) root.getPlayer();
 	
 	/** Get the event to select musical note */
 	public static select getBeatSelectEvent() {
@@ -14,7 +17,6 @@ public class noteSetting  {
 	
 	/** The event to select musical note */
 	private static class select implements ChangeListener<Integer> {
-		private static final Controller root = Controller.getInstance();
 		
 		@Override
 		public void changed(ObservableValue<? extends Integer> observable, Integer oldValue, Integer newValue) {
@@ -25,15 +27,17 @@ public class noteSetting  {
 			}
 			
 			indicatorSetting.rebuildIndicator(beatCount);
-			SoundPlayer.setNote(newValue);
+			player.setNote(newValue);
 		}
 		
 		//Singleton Pattern
-		private static select I = new select();
-		public static select getInstance() {
+		static select I = new select();
+		static select getInstance() {
 			return I;
 		}
-		private select() {
-		}
+	}
+	
+	public static void setPlayer(MetronomeStrategy p) {
+		player = p;
 	}
 }

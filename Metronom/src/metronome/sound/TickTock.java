@@ -3,13 +3,10 @@ package metronome.sound;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.AudioClip;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
-public class Sound{
+public class TickTock{
 	private AudioClip normalBeat, accentBeat;
-	private MediaPlayer music;
-	Sound() {
+	TickTock() {
 		new JFXPanel(); //이게 없으면 IllegalStateException 예외가 발생함
 			
 		String accentBeatFile = "/audio/Tick.wav";
@@ -17,7 +14,7 @@ public class Sound{
             
         accentBeat = new AudioClip(getClass().getResource(accentBeatFile).toString());
         normalBeat = new AudioClip(getClass().getResource(normalBeatFile).toString());
-		music = new MediaPlayer(new Media(getClass().getResource("/audio/Tock.wav").toString()));
+        setVolume(50);
 	}
 	
 	public void play(boolean isAccent) {
@@ -33,7 +30,7 @@ public class Sound{
 	}
 	
 	public void setVolume(int vol) {
-		double volume = vol / 100.0;
+		double volume = vol / 200.0;
 		normalBeat.setVolume(volume);
 		accentBeat.setVolume(volume);
 	}

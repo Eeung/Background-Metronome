@@ -8,7 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import metronome.Controller;
-import metronome.sound.SoundPlayer;
+import metronome.sound.MetronomeStrategy;
 
 public class bpmSetting {
 	private static final Controller root = Controller.getInstance();
@@ -16,6 +16,7 @@ public class bpmSetting {
 	private static Label bpmValue = root.getBpmValue();
 	private static Label bpmText = root.getBpmText();
 	private static Slider bpmSlider = root.getBpmSlider();
+	private static MetronomeStrategy player = (MetronomeStrategy) root.getPlayer();
 	
 	/** Get event instances of bpm increase/decrease buttons. */
 	public static bpmChange getButtonEvent(Button bpmButton) {
@@ -56,7 +57,7 @@ public class bpmSetting {
 			}
 			
 			bpmValue.setText( Integer.toString(bpm) );
-			SoundPlayer.setBpm(bpm/100.0);
+			player.setBpm(bpm/100.0);
 			bpmText.setText( sb.toString() );
 			
 			/** Synchronizing Bpm and bpmSlider*/
@@ -81,7 +82,7 @@ public class bpmSetting {
 			int result = newValue.intValue();
 			
 			bpmValue.setText( Integer.toString(result*100) );
-			SoundPlayer.setBpm(result);
+			player.setBpm(result);
 			bpmText.setText( Integer.toString(result) );
 			
 			//System.out.println("Slider Value Changed: " + result);
@@ -111,6 +112,10 @@ public class bpmSetting {
             sb.setLength(sb.length()-2);
 		if (num>0) sb.insert(0, '+');
 		return sb.toString();
+	}
+	
+	public static void setPlayer(MetronomeStrategy p) {
+		player = p;
 	}
 }
 

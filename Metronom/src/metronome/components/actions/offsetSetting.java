@@ -6,12 +6,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import metronome.Controller;
-import metronome.sound.SoundPlayer;
+import metronome.sound.MusicStrategy;
 
 public class offsetSetting {
 	private static final Controller root = Controller.getInstance();
 	
 	private static Label offsetText = root.getOffsetText();
+	private static MusicStrategy player = root.getPlayer();
 	
 	public static final int NormalDecrease = -1;
 	public static final int MoreDecrease = -10;
@@ -61,7 +62,7 @@ public class offsetSetting {
 			final int result = offset;
 			
 			Platform.runLater(() -> offsetText.setText( Integer.toString(result) ) );
-			SoundPlayer.setOffset(offset);
+			player.setOffset(offset);
 		}
 		
 		private int rangeCheck(int target, int min, int max) {
@@ -89,4 +90,7 @@ public class offsetSetting {
 		return sb.toString();
 	}
 	
+	public static void setPlayer(MusicStrategy p) {
+		player = p;
+	}
 }

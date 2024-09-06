@@ -2,33 +2,33 @@ package metronome.components.actions;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Slider;
-import metronome.sound.SoundPlayer;
+import metronome.Controller;
+import metronome.sound.MusicStrategy;
 
 public class VolumeSetting {
+	private static final Controller root = Controller.getInstance();
+	
+	private static MusicStrategy player = root.getPlayer();
 	
 	/** Get event instances of volume slider. */
-	public static volume getSliderEvnet(Slider s) {
-		return new volume(s);
+	public static volume getSliderEvnet() {
+		return new volume();
 	}
 
 	/** The event to control volume with slider */
 	private static class volume implements ChangeListener<Number> {
-		private Slider volumeSlider;
-		
-		public volume(Slider s) {
-			volumeSlider = s;
-		}
 		
 		@Override
-		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-			if(!volumeSlider.isValueChanging()) return;
-			
+		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {			
 			int result = newValue.intValue();
 			
-			SoundPlayer.setVolume(result);
+			player.setVolume(result);
 			
 			System.out.println("Volume Value Changed: " + result);
 		}
+	}
+	
+	public static void setPlayer(MusicStrategy p) {
+		player = p;
 	}
 }

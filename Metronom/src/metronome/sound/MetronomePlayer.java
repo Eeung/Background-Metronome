@@ -9,41 +9,43 @@ import javafx.application.Platform;
 import javafx.scene.shape.Circle;
 import metronome.Controller;
 
-public class SoundPlayer{
-	private final static Controller root = Controller.getInstance();
+public class MetronomePlayer implements MetronomeStrategy {
+	private static Controller root;
 	
-	private static double bpm=120;
-	private static int offset = 0;
+	private double bpm=120;
+	private int offset = 0;
 	/** Store previous offset value. */
-	private static int pre_offset = Integer.MIN_VALUE;
+	private int pre_offset = Integer.MIN_VALUE;
 
 	/** If you use the Quick Restart feature, it reduces the offset by a predetermined amount. */
-	private static int fast_retry = 0;
-	private static int beat_sequence = 0, beat_count = -1;
-	private static int note, beat=4, time=4;
+	private int fast_retry = 0;
+	private int beat_sequence = 0, beat_count = -1;
+	private int note, beat=4, time=4;
 	
-	private static ScheduledExecutorService beatExecutor = Executors.newSingleThreadScheduledExecutor();
-	private static ScheduledFuture<?> beatScheduled;
+	private ScheduledExecutorService beatExecutor = Executors.newSingleThreadScheduledExecutor();
+	private ScheduledFuture<?> beatScheduled;
 	/** The function of playing beat sound. */
-	private static Runnable play;
-	private static Sound sound = new Sound();
+	private Runnable runnable;
+	private static TickTock TickTock = new TickTock();
 	
-	private static Circle[] indicator;
+	private Circle[] indicator;
 	
-	public static void start() {
+	@Override
+	public void play() {
 		if(bpm<0) return;
+		root = Controller.getInstance();
 		/** The Delay of between each beat sound. */
 		long nanoPeriod = (long) (60_000_000_000L/(bpm* note/beat ));
 		
-		play = () -> {
+		runnable = () -> {
 			beat_sequence %= beat_count;
-			sound.play( root.isAccent(beat_sequence) );
+			TickTock.play( root.isAccent(beat_sequence) );
 			Platform.runLater( () -> indicator[beat_sequence++].requestFocus() );
 		};
 		
 		/** (runnable function, delay before starting, interval, time unit) */
 		beatScheduled = beatExecutor.scheduleAtFixedRate(
-				play, (offset-fast_retry)*1_000_000L, nanoPeriod, TimeUnit.NANOSECONDS);
+				runnable, (offset-fast_retry)*1_000_000L, nanoPeriod, TimeUnit.NANOSECONDS);
 		
 		fast_retry = 0;
 		pre_offset = offset;
@@ -51,7 +53,8 @@ public class SoundPlayer{
 	}
 	
 	/** Cancel the schedule that play sound at regular intervals. */
-	public static void scheduleCancel() {
+	@Override
+	public void stop() {
 		beatScheduled.cancel(true);
 		beatScheduled = null;
 		beat_sequence = 0;
@@ -60,7 +63,7 @@ public class SoundPlayer{
 	}
 	
 	/** Reset the interval when you change value(bpm, offset, note or beat) */
-	private static void scheduleRestart() {
+	private void restart() {
 		long nanoPeriod = (long) (60_000_000_000L/(bpm* note/beat ));	//바뀐 bpm에 따라 간격 구하기
 		
 		Long remainDelay = beatScheduled.getDelay(TimeUnit.NANOSECONDS);	//다음 비트가 재생될 때까지 남은 딜레이 가져오기
@@ -69,20 +72,22 @@ public class SoundPlayer{
 		
 		beatScheduled.cancel(true);	//스케쥴 중지
 		//바뀐 정보대로 스케쥴 재시작
-		beatScheduled = beatExecutor.scheduleAtFixedRate(play, remainDelay, nanoPeriod, TimeUnit.NANOSECONDS);
+		beatScheduled = beatExecutor.scheduleAtFixedRate(runnable, remainDelay, nanoPeriod, TimeUnit.NANOSECONDS);
 	}
 	
-	private static void setBeatCount() {
+	private void setBeatCount() {
 		beat_count = note *time/beat;
 	}
 	
-	public static void setBpm(double b) {
+	@Override
+	public void setBpm(double b) {
 		bpm = b;
 		//매트로놈 중간에 bpm을 바꿀 때,
-		if(beatScheduled != null) scheduleRestart();
+		if(beatScheduled != null) restart();
 	}
 	
-	public static void setOffset(int off) {
+	@Override
+	public void setOffset(int off) {
 		if(pre_offset == Integer.MIN_VALUE) {
 			offset = off;
 			return;
@@ -90,14 +95,16 @@ public class SoundPlayer{
 		offset = off - pre_offset;
 		pre_offset = off;
 		//매트로놈 중간에 오프셋을 바꿀 때,
-		if(beatScheduled != null) scheduleRestart();
+		if(beatScheduled != null) restart();
 	}
 	
-	public static void setVolume(int vol) {
-		sound.setVolume(vol);
+	@Override
+	public void setVolume(int vol) {
+		TickTock.setVolume(vol);
 	}
 	
-	public static void setNote(int b) {
+	@Override
+	public void setNote(int b) {
 		note = b;
 		setBeatCount();
 		//매트로놈 중간에 비트를 바꿀 때,
@@ -106,11 +113,12 @@ public class SoundPlayer{
 			int zeroOrOne = ((beat_sequence - beat_count) >> 31) & 1;
 			beat_sequence *= zeroOrOne;
 			indicator[beat_sequence-zeroOrOne].requestFocus();
-			scheduleRestart();
+			restart();
 		}
 	}
 	
-	public static void setBeat(int b) {
+	@Override
+	public void setBeat(int b) {
 		beat = b;
 		setBeatCount();
 		//매트로놈 중간에 비트를 바꿀 때,
@@ -119,10 +127,12 @@ public class SoundPlayer{
 			int zeroOrOne = ((beat_sequence - beat_count) >> 31) & 1;
 			beat_sequence *= zeroOrOne;
 			indicator[beat_sequence-zeroOrOne].requestFocus();
+			restart();
 		}
 	}
 	
-	public static void setTime(int b) {
+	@Override
+	public void setTime(int b) {
 		time = b;
 		setBeatCount();
 		//매트로놈 중간에 비트를 바꿀 때,
@@ -134,16 +144,26 @@ public class SoundPlayer{
 		}
 	}
 	
-	public static void setIndicator(Circle[] indi) {
+	@Override
+	public void setIndicator(Circle[] indi) {
 		indicator = indi;
 	}
 	
-	public static int getBeat_sequence() {
+	@Override
+	public int getBeat_sequence() {
 		int result = (beat_sequence-1)%beat_count;
 		return result;
 	}
 	
-	public static void activateFastRetry() {
+	@Override
+	public void activateFastRetry() {
 		fast_retry = 1000;
+	}
+	
+	//Singleton Pattern
+	private static MetronomePlayer I = new MetronomePlayer();
+	private MetronomePlayer() {}
+	public static MetronomePlayer getInstance() {
+		return I;
 	}
 }

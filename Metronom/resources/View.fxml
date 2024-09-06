@@ -23,7 +23,7 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <StackPane>
+                  <StackPane prefHeight="151.0" prefWidth="638.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <FlowPane id="MediaVisualPane" fx:id="mediaVisualPane" alignment="CENTER" prefHeight="151.0" prefWidth="638.0" style="-fx-background-color: #f2f2f2;">
                            <children>
@@ -49,13 +49,13 @@
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <StackPane>
+                              <StackPane prefHeight="178.0" prefWidth="636.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <BorderPane id="MediaControlPane" fx:id="mediaControlPane" prefHeight="178.0" prefWidth="636.0" style="-fx-background-color: #f2f2f2;">
                                        <bottom>
                                           <FlowPane alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
                                              <children>
-                                                <Button id="browseMedia" mnemonicParsing="false" text="Browse...">
+                                                <Button id="browseMedia" fx:id="browseFile" mnemonicParsing="false" text="Browse...">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
@@ -66,7 +66,7 @@
                                                       <Insets left="5.0" right="5.0" />
                                                    </FlowPane.margin>
                                                 </Button>
-                                                <Label id="mediaPath" text="select a file...">
+                                                <Label id="mediaPath" fx:id="musicFilePath" text="select a file...">
                                                    <font>
                                                       <Font size="19.0" />
                                                    </font>
@@ -77,23 +77,6 @@
                                              </BorderPane.margin>
                                           </FlowPane>
                                        </bottom>
-                                       <top>
-                                          <Label text="선택된 음악:" BorderPane.alignment="CENTER">
-                                             <font>
-                                                <Font name="System Bold" size="16.0" />
-                                             </font>
-                                             <BorderPane.margin>
-                                                <Insets top="5.0" />
-                                             </BorderPane.margin>
-                                          </Label>
-                                       </top>
-                                       <center>
-                                          <Label id="selectedMusic" text="???" BorderPane.alignment="CENTER">
-                                             <font>
-                                                <Font size="77.0" />
-                                             </font>
-                                          </Label>
-                                       </center>
                                     </BorderPane>
                                     <BorderPane id="metronomeControlPane" fx:id="metronomeControlPane" prefHeight="178.0" prefWidth="636.0" style="-fx-background-color: #f2f2f2;">
                                        <bottom>
@@ -397,6 +380,9 @@
                                                          <padding>
                                                             <Insets bottom="5.0" left="0.1" right="0.1" top="5.0" />
                                                          </padding>
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" />
+                                                         </VBox.margin>
                                                       </ToggleButton>
                                                    </children>
                                                    <BorderPane.margin>

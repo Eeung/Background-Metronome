@@ -4,6 +4,7 @@ import java.net.*;
 import java.util.*;
 
 import lc.kra.system.keyboard.GlobalKeyboardHook;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.*;
@@ -16,18 +17,26 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import metronome.components.actions.VolumeSetting;
-import metronome.components.actions.noteSetting;
-import metronome.components.actions.bpmSetting;
-import metronome.components.actions.indicatorSetting;
-import metronome.components.actions.modeSelecting;
-import metronome.components.actions.offsetSetting;
-import metronome.components.actions.playAndStop;
-import metronome.components.actions.timeSignatureSetting;
+import metronome.components.actions.*;
+import metronome.sound.*;
 
 public class Controller implements Initializable {
+	/** Buravura font to integer */
+	private static HashMap<Character,Integer> buravura = new HashMap<>(10);
+	
 	/**Instances of singleton pattern */
 	private static Controller instance;
+	public Controller() {
+		instance = this;
+		char[] TimeSignatureCharacter = {'','','','','','','','','',''};
+		for(int i=0;i<10;i++)
+			buravura.put(TimeSignatureCharacter[i], i);
+	}
+	
+	public static Controller getInstance() {
+	    return instance;
+	}
+	
 	
 	@FXML
 	private FlowPane metronomeVisualPane;
@@ -82,7 +91,7 @@ public class Controller implements Initializable {
 	@FXML
 	private Label offsetText;
 	@FXML
-	private Label SelectedMusic;
+	private Label musicFilePath;
 	@FXML
 	private Label timeSignatureTime;
 	@FXML
@@ -96,6 +105,7 @@ public class Controller implements Initializable {
 	/** Window's Focus Status */
 	private boolean isFocused = false;
 	
+	private MusicStrategy player = MetronomePlayer.getInstance();
 	/** Sound Playback Status */
 	private boolean isPlayed = false;
 	/** Start time in milliseconds when play sound */
@@ -106,8 +116,7 @@ public class Controller implements Initializable {
 	
 	/** The variable for bitmasking the type of beat indicator */
 	private long accentArray = 0x00_00_00_00_00_00_00_01L;
-	/** Buravura font to integer */
-	private static HashMap<Character,Integer> buravura = new HashMap<>(10);
+	
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -149,7 +158,7 @@ public class Controller implements Initializable {
 		offsetIncrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.NormalIncrease) );
 		offsetMoreIncrease.setOnMouseClicked( offsetSetting.getButtonEvent( offsetSetting.MoreIncrease) );
 		
-		volumeSlider.valueProperty().addListener( VolumeSetting.getSliderEvnet(volumeSlider) );
+		volumeSlider.valueProperty().addListener( VolumeSetting.getSliderEvnet() );
 		volumeSlider.focusedProperty().addListener( indicatorSetting.getBlurEvent() );
 		
 		selectNote.valueProperty().addListener( noteSetting.getBeatSelectEvent() );
@@ -164,19 +173,11 @@ public class Controller implements Initializable {
 		metronomeVisualPane.heightProperty().addListener((observable, oldValue, newValue) -> indicatorSetting.adjustBallSizes( getIndicatorRows() ));
 		
 		//대망의 음악모드 설정
-		selectMedia.setOnAction( modeSelecting.getModeSelectEvent(mediaVisualPane, mediaControlPane) );
-		selectMetronome.setOnAction( modeSelecting.getModeSelectEvent(metronomeVisualPane, metronomeControlPane) );
-	}
-	
-	public Controller() {
-		instance = this;
-		char[] TimeSignatureCharacter = {'','','','','','','','','',''};
-		for(int i=0;i<10;i++)
-			buravura.put(TimeSignatureCharacter[i], i);
-	}
-	
-	public static Controller getInstance() {
-	    return instance;
+		selectMedia.setOnAction( modeSelecting.getModeSelectEvent(mediaVisualPane, mediaControlPane, MusicPlayer.getInstance()) );
+		selectMetronome.setOnAction( modeSelecting.getModeSelectEvent(metronomeVisualPane, metronomeControlPane, MetronomePlayer.getInstance()) );
+		
+		Platform.runLater(() -> browseFile.setOnAction(fileBrowsing.getFileBrowsing(stage)));
+		;
 	}
 	
 	public void setStage(Stage stage) {
@@ -191,126 +192,113 @@ public class Controller implements Initializable {
 	public BorderPane getMediaControlPane() {
 		return mediaControlPane;
 	}
-
 	public BorderPane getMetronomeControlPane() {
 		return metronomeControlPane;
 	}
-
 	public FlowPane getMediaVisualPane() {
 		return mediaVisualPane;
 	}
-	
 	public FlowPane getMetronomeVisualPane() {
 		return metronomeVisualPane;
 	}
-
 	public VBox getIndicatorCol() {
 		return indicatorCol;
 	}
-
 	public ToggleButton getSelectMedia() {
 		return selectMedia;
 	}
-
 	public ToggleButton getSelectMetronome() {
 		return selectMetronome;
 	}
-
 	public Button getBpmLessDecrease() {
 		return bpmLessDecrease;
 	}
-
 	public Button getBpmDecrease() {
 		return bpmDecrease;
 	}
-
 	public Button getBpmMoreDecrease() {
 		return bpmMoreDecrease;
 	}
-
 	public Button getBpmLessIncrease() {
 		return bpmLessIncrease;
 	}
-
 	public Button getBpmIncrease() {
 		return bpmIncrease;
 	}
-
 	public Button getBpmMoreIncrease() {
 		return bpmMoreIncrease;
 	}
-
 	public Button getOffsetDecrease() {
 		return offsetDecrease;
 	}
-
 	public Button getOffsetMoreDecrease() {
 		return offsetMoreDecrease;
 	}
-
 	public Button getOffsetIncrease() {
 		return offsetIncrease;
 	}
-
 	public Button getOffsetMoreIncrease() {
 		return offsetMoreIncrease;
 	}
-	
 	public Button getPlaySound() {
 		return playSound;
 	}
-
 	public Button getStopSound() {
 		return stopSound;
 	}
 	public ComboBox<Integer> getSelectBeat() {
 		return selectNote;
 	}
-
 	public Slider getBpmSlider() {
 		return bpmSlider;
 	}
-
 	public Slider getVolumeSlider() {
 		return volumeSlider;
 	}
-	
 	public Label getBpmValue() {
 		return bpmValue;
 	}
-	
 	public Label getBpmText() {
 		return bpmText;
 	}
-
 	public Label getOffsetText() {
 		return offsetText;
 	}
-
+	public MusicStrategy getPlayer() {
+		return player;
+	}
+	public void setPlayer(MusicStrategy pl) {
+		player = pl;
+		
+		playAndStop.setPlayer(pl);
+		offsetSetting.setPlayer(pl);
+		VolumeSetting.setPlayer(pl);
+		if(pl instanceof MetronomeStrategy) {
+			MetronomeStrategy temp = (MetronomeStrategy) pl;
+			bpmSetting.setPlayer(temp);
+			indicatorSetting.setPlayer(temp);
+			noteSetting.setPlayer(temp);
+			timeSignatureSetting.setPlayer(temp);
+		}
+	}
 	public boolean isPlayed() {
 		return isPlayed;
 	}
-
 	public void setPlayed(boolean isPlayed) {
 		this.isPlayed = isPlayed;
 	}
-	
 	public boolean isFocused() {
 		return isFocused;
 	}
-	
 	public long getStartTime() {
 		return startTime;
 	}
-	
 	public void setStartTime(long miliSec) {
 		startTime = miliSec;
 	}
-	
 	public HBox[] getIndicatorRows() {
 		return indicatorCol.getChildren().toArray(new HBox[0]);
 	}
-	
 	public Circle[] getBeatIndicator(HBox[] rows) {
 		Circle[] balls = new Circle[ getBeatCount() ];
 		int idx = 0;
@@ -321,25 +309,20 @@ public class Controller implements Initializable {
 		}
 		return balls;
 	}
-	
 	public boolean isAccent(int idx) {
 		if( ((accentArray>>>idx) & 1) == 1) return true;
 		return false;
 	}
-
 	public void setIsAccent(int idx, boolean newValue) {
 		if(newValue) accentArray |= 1L << idx;
 		else accentArray &= ~(1L << idx) ;
 	}
-	
 	public Label getTimeSignatureTime() {
 		return timeSignatureTime;
 	}
-
 	public Label getTimeSignatureBeat() {
 		return timeSignatureBeat;
 	}
-	
 	public int getBuravuraValue(String str) {
 		int n = 0;
 		for(char c : str.toCharArray()) {
@@ -347,12 +330,14 @@ public class Controller implements Initializable {
 		}
 		return n;
 	}
-	
 	public int getBeatCount() {
 		int note = selectNote.getValue();
 		int time = getBuravuraValue(timeSignatureTime.getText());
 		int beat = getBuravuraValue(timeSignatureBeat.getText());
 		if((note * time)%beat > 0) return -1;
 		return note * time/beat;
+	}
+	public Label getMusicFilePath() {
+		return musicFilePath;
 	}
 }

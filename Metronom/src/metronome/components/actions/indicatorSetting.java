@@ -11,12 +11,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import metronome.Controller;
-import metronome.sound.SoundPlayer;
+import metronome.sound.MetronomeStrategy;
 
 public class indicatorSetting {
 	private final static Controller root = Controller.getInstance();
+	
 	private static VBox indicatorCol = root.getIndicatorCol();
 	private static FlowPane metronomeVisualPane = root.getMetronomeVisualPane();
+	private static MetronomeStrategy player = (MetronomeStrategy) root.getPlayer();
 	
 	private final static Color activated_orange = Color.web("#ff940c");
 	private final static Color deactivated_orange = Color.web("#a3630c");
@@ -81,7 +83,7 @@ public class indicatorSetting {
         }
         
         adjustBallSizes(rows);
-        SoundPlayer.setIndicator( root.getBeatIndicator(rows) );
+        player.setIndicator( root.getBeatIndicator(rows) );
 	}
 	
 	/** The event of turning on/off accent beat. */
@@ -121,15 +123,16 @@ public class indicatorSetting {
 		private int idx;
 		@Override
 		public void handle(MouseEvent arg0) {
+			
 			if(root.isAccent(idx)) {
 				root.setIsAccent(idx, false);
 				ball.focusedProperty().addListener( getNormalBeatEvent(ball) );
-				if (root.isPlayed() && SoundPlayer.getBeat_sequence() == idx) ball.setFill(activated_yellow);
+				if (root.isPlayed() && player.getBeat_sequence() == idx) ball.setFill(activated_yellow);
 				else ball.setFill(deactivated_yellow);
 			} else {
 				root.setIsAccent(idx, true);
 				ball.focusedProperty().addListener( getAccentBeatEvent(ball) );
-				if (root.isPlayed() && SoundPlayer.getBeat_sequence() == idx) ball.setFill(activated_orange);
+				if (root.isPlayed() && player.getBeat_sequence() == idx) ball.setFill(activated_orange);
 				else ball.setFill(deactivated_orange);
 			}
 		}
@@ -145,7 +148,7 @@ public class indicatorSetting {
 		@Override
 		public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 			if(!(newValue && root.isPlayed())) return;
-			int idx = SoundPlayer.getBeat_sequence();
+			int idx = player.getBeat_sequence();
 			if(idx>-1) root.getBeatIndicator( root.getIndicatorRows() )[idx].requestFocus();
 		}
 		
@@ -180,5 +183,9 @@ public class indicatorSetting {
 		flow.setAlignment(Pos.CENTER);
 		flow.setSpacing(5);
 		return flow;
+	}
+	
+	public static void setPlayer(MetronomeStrategy p) {
+		player = p;
 	}
 }

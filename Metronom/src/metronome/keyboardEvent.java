@@ -7,7 +7,7 @@ import lc.kra.system.keyboard.event.GlobalKeyEvent;
 import lc.kra.system.keyboard.event.GlobalKeyListener;
 import metronome.components.actions.bpmSetting;
 import metronome.components.actions.offsetSetting;
-import metronome.sound.SoundPlayer;
+import metronome.sound.MusicStrategy;
 
 public class keyboardEvent implements GlobalKeyListener {
 	private static final Controller root = Controller.getInstance();
@@ -17,6 +17,7 @@ public class keyboardEvent implements GlobalKeyListener {
 	private Label offsetText = root.getOffsetText();
 	private Button playSound = root.getPlaySound();
 	private Button stopSound = root.getStopSound();
+	private MusicStrategy player = root.getPlayer();
 	
 	/** The pressed status of each Key */
 	private boolean[] keyPressed = new boolean[255];
@@ -47,14 +48,14 @@ public class keyboardEvent implements GlobalKeyListener {
 			if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_OEM_5) {	
 				long current = System.currentTimeMillis();
 				Platform.runLater(() -> offsetText.setText(Long.toString(current-root.getStartTime())) );
-				SoundPlayer.setOffset( (int)(current-root.getStartTime()) );
+				player.setOffset( (int)(current-root.getStartTime()) );
 			}/** Press Escape key to stop sound */
 			else if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {
 				stopSound.fire();
 			} /** Press F5 key to restart sound by subtracting it from the offset for the specified time. */
 			else if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_F5) {
 				stopSound.fire();
-				SoundPlayer.activateFastRetry();
+				player.activateFastRetry();
 				playSound.fire();
 			}
 		} else {

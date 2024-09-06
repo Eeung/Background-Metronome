@@ -5,12 +5,14 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import metronome.CircularList;
 import metronome.Controller;
-import metronome.sound.SoundPlayer;
+import metronome.sound.MetronomeStrategy;
 
 public class timeSignatureSetting {
 	private static final Controller root = Controller.getInstance();
 	public static final int NUMERATOR = 0;
 	public static final int DENOMINATOR = 1;
+	
+	private static MetronomeStrategy player = (MetronomeStrategy) root.getPlayer();
 	
 	/** Get the event of selecting the numerator of the time signature. */
 	public static signature getTimeSignatureEvent(int id, String[] integers) {
@@ -51,20 +53,20 @@ public class timeSignatureSetting {
 				value = list.next();
 				timeSignaturePart.setText( value );
 				beatCount = root.getBeatCount();
-				if(beatCount == -1) {
+				while(beatCount == -1) {
 					value = list.next();
 					timeSignaturePart.setText( value );
-					return;
+					beatCount = root.getBeatCount();
 				}
 				break;
 			case SECONDARY:
 				value = list.previous();
 				timeSignaturePart.setText( value );
 				beatCount = root.getBeatCount();
-				if(beatCount == -1) {
+				while(beatCount == -1) {
 					value = list.previous();
 					timeSignaturePart.setText( value );
-					return;
+					beatCount = root.getBeatCount();
 				}
 				break;
 			default:
@@ -73,10 +75,13 @@ public class timeSignatureSetting {
 			indicatorSetting.rebuildIndicator(beatCount);
 			
 			switch(id) {
-			case 0 -> SoundPlayer.setTime( root.getBuravuraValue(value) );
-			case 1 -> SoundPlayer.setBeat( root.getBuravuraValue(value) );
+			case 0 -> player.setTime( root.getBuravuraValue(value) );
+			case 1 -> player.setBeat( root.getBuravuraValue(value) );
 			}
 		}
-		
+	}
+	
+	public static void setPlayer(MetronomeStrategy p) {
+		player = p;
 	}
 }
