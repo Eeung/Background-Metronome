@@ -77,7 +77,7 @@ public class bpmSetting {
 		private Slider bpmSlider;
 		@Override
 		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-			if(!bpmSlider.isValueChanging()) return;
+			if(!(bpmSlider.isValueChanging() || bpmSlider.isHover()) ) return;
 			
 			int result = newValue.intValue();
 			

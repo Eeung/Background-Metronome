@@ -44,7 +44,6 @@ public class CircularList<E> extends ArrayList<E> {
 		current_index = index;
 		return super.get(index);
 	}
-	
 	@Override
 	public E getFirst() {
 		current_index = 0;

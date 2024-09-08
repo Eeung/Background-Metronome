@@ -24,7 +24,7 @@ public class VolumeSetting {
 			
 			player.setVolume(result);
 			
-			System.out.println("Volume Value Changed: " + result);
+			//System.out.println("Volume Value Changed: " + result);
 		}
 	}
 	

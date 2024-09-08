@@ -16,342 +16,346 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="metronome.Controller">
-   <children>
-      <SplitPane dividerPositions="0.32217573221757323" focusTraversable="false" layoutX="211.0" layoutY="129.0" orientation="VERTICAL" prefHeight="464.0" prefWidth="632.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-               <children>
-                  <FlowPane fx:id="metronomeVisualPane" alignment="CENTER" prefHeight="151.0" prefWidth="638.0" style="-fx-background-color: #f2f2f2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <VBox fx:id="indicatorCol" alignment="CENTER" spacing="5.0" />
-                     </children>
-                  </FlowPane>
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-               <children>
-                  <SplitPane dividerPositions="0.5680272108843537" focusTraversable="false" layoutX="202.0" layoutY="41.0" orientation="VERTICAL" prefHeight="296.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <BorderPane id="metronomeControlPane" fx:id="metronomeControlPane" prefHeight="178.0" prefWidth="636.0" style="-fx-background-color: #f2f2f2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <bottom>
-                                    <FlowPane alignment="CENTER" BorderPane.alignment="CENTER">
-                                       <children>
-                                          <Slider id="bpmSlider" fx:id="bpmSlider" focusTraversable="false" majorTickUnit="30.0" max="480.0" min="30.0" prefWidth="600.0" showTickLabels="true" showTickMarks="true" value="120.0" />
-                                       </children>
-                                    </FlowPane>
-                                 </bottom>
-                                 <center>
-                                    <FlowPane alignment="CENTER" BorderPane.alignment="CENTER">
-                                       <children>
-                                          <HBox alignment="CENTER" prefHeight="95.0" prefWidth="308.0">
-                                             <children>
-                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-                                                   <children>
-                                                      <Button id="bpmLessDecrease" fx:id="bpmLessDecrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="-0.1" textAlignment="CENTER" wrapText="true">
-                                                         <font>
-                                                            <Font size="20.0" />
-                                                         </font>
-                                                         <VBox.margin>
-                                                            <Insets left="5.0" right="5.0" top="5.0" />
-                                                         </VBox.margin>
-                                                         <padding>
-                                                            <Insets bottom="3.0" />
-                                                         </padding>
-                                                      </Button>
-                                                      <Button id="bpmDecrease" fx:id="bpmDecrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="-1" textAlignment="CENTER" wrapText="true">
-                                                         <font>
-                                                            <Font size="20.0" />
-                                                         </font>
-                                                         <padding>
-                                                            <Insets bottom="3.0" />
-                                                         </padding>
-                                                         <VBox.margin>
-                                                            <Insets left="5.0" right="5.0" top="5.0" />
-                                                         </VBox.margin>
-                                                      </Button>
-                                                      <Button id="bpmMoreDecrease" fx:id="bpmMoreDecrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="-10" textAlignment="CENTER" wrapText="true">
-                                                         <font>
-                                                            <Font size="20.0" />
-                                                         </font>
-                                                         <padding>
-                                                            <Insets bottom="3.0" />
-                                                         </padding>
-                                                         <VBox.margin>
-                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                         </VBox.margin>
-                                                      </Button>
-                                                   </children>
-                                                </VBox>
-                                                <VBox alignment="CENTER">
-                                                   <children>
-                                                      <Label fx:id="bpmValue" text="12000" visible="false">
-                                                         <font>
-                                                            <Font size="1.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <Label id="bpmText" fx:id="bpmText" alignment="CENTER" focusTraversable="false" prefHeight="71.0" prefWidth="216.0" textAlignment="CENTER">
-                                                         <font>
-                                                            <Font size="60.0" />
-                                                         </font>
-                                                         <VBox.margin>
-                                                            <Insets bottom="-10.0" />
-                                                         </VBox.margin>
-                                                      </Label>
-                                                      <Label focusTraversable="false" text="Bpm">
-                                                         <font>
-                                                            <Font size="23.0" />
-                                                         </font>
-                                                      </Label>
-                                                   </children>
-                                                </VBox>
-                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-                                                   <children>
-                                                      <Button id="bpmLessIncrease" fx:id="bpmLessIncrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="+0.1" textAlignment="CENTER" wrapText="true">
+	<children>
+		<SplitPane dividerPositions="0.32217573221757323" focusTraversable="false" layoutX="211.0" layoutY="129.0" orientation="VERTICAL" prefHeight="464.0" prefWidth="632.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+			<items>
+				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+					<children>
+						<FlowPane fx:id="metronomeVisualPane" alignment="CENTER" prefHeight="151.0" prefWidth="638.0" style="-fx-background-color: #f2f2f2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+							<children>
+								<VBox fx:id="indicatorCol" alignment="CENTER" spacing="5.0" />
+							</children>
+						</FlowPane>
+					</children>
+				</AnchorPane>
+				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+					<children>
+						<SplitPane dividerPositions="0.5680272108843537" focusTraversable="false" layoutX="202.0" layoutY="41.0" orientation="VERTICAL" prefHeight="296.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+							<items>
+								<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+									<children>
+										<BorderPane id="metronomeControlPane" fx:id="metronomeControlPane" prefHeight="178.0" prefWidth="636.0" style="-fx-background-color: #f2f2f2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+											<bottom>
+												<FlowPane alignment="CENTER" BorderPane.alignment="CENTER">
+													<children>
+														<Slider id="bpmSlider" fx:id="bpmSlider" focusTraversable="false" majorTickUnit="30.0" max="480.0" min="30.0" prefWidth="600.0" showTickLabels="true" showTickMarks="true" value="120.0" />
+													</children>
+												</FlowPane>
+											</bottom>
+											<center>
+												<FlowPane alignment="CENTER" BorderPane.alignment="CENTER">
+													<children>
+														<HBox alignment="CENTER" prefHeight="95.0" prefWidth="308.0">
+															<children>
+																<VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+																	<children>
+																		<Button id="bpmLessDecrease" fx:id="bpmLessDecrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="-0.1" textAlignment="CENTER" wrapText="true">
+																			<font>
+																				<Font size="20.0" />
+																			</font>
+																			<VBox.margin>
+																				<Insets left="5.0" right="5.0" top="5.0" />
+																			</VBox.margin>
+																			<padding>
+																				<Insets bottom="3.0" />
+																			</padding>
+																		</Button>
+																		<Button id="bpmDecrease" fx:id="bpmDecrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="-1" textAlignment="CENTER" wrapText="true">
+																			<font>
+																				<Font size="20.0" />
+																			</font>
+																			<padding>
+																				<Insets bottom="3.0" />
+																			</padding>
+																			<VBox.margin>
+																				<Insets left="5.0" right="5.0" top="5.0" />
+																			</VBox.margin>
+																		</Button>
+																		<Button id="bpmMoreDecrease" fx:id="bpmMoreDecrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="-10" textAlignment="CENTER" wrapText="true">
+																			<font>
+																				<Font size="20.0" />
+																			</font>
+																			<padding>
+																				<Insets bottom="3.0" />
+																			</padding>
+																			<VBox.margin>
+																				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+																			</VBox.margin>
+																		</Button>
+																	</children>
+																</VBox>
+																<VBox alignment="CENTER">
+																	<children>
+																		<Label fx:id="bpmValue" text="12000" visible="false">
+																			<font>
+																				<Font size="1.0" />
+																			</font>
+																		</Label>
+																		<Label id="bpmText" fx:id="bpmText" alignment="CENTER" focusTraversable="false" prefHeight="71.0" prefWidth="216.0" textAlignment="CENTER">
+																			<font>
+																				<Font size="60.0" />
+																			</font>
+																			<VBox.margin>
+																				<Insets bottom="-10.0" />
+																			</VBox.margin>
+																		</Label>
+																		<Label focusTraversable="false" text="Bpm">
+																			<font>
+																				<Font size="23.0" />
+																			</font>
+																		</Label>
+																	</children>
+																</VBox>
+																<VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+																	<children>
+																		<Button id="bpmLessIncrease" fx:id="bpmLessIncrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="+0.1" textAlignment="CENTER" wrapText="true">
 
-                                                               <font>
-                                                            <Font size="20.0" />
-                                                         </font>
-                                                         <padding>
-                                                            <Insets bottom="3.0" />
-                                                         </padding>
-                                                         <VBox.margin>
-                                                            <Insets left="5.0" right="5.0" top="5.0" />
-                                                         </VBox.margin>
-                                                      </Button>
-                                                      <Button id="bpmIncrease" fx:id="bpmIncrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="+1" textAlignment="CENTER" wrapText="true">
-                                                         <font>
-                                                            <Font size="20.0" />
-                                                         </font>
-                                                         <padding>
-                                                            <Insets bottom="3.0" />
-                                                         </padding>
-                                                         <VBox.margin>
-                                                            <Insets left="5.0" right="5.0" top="5.0" />
-                                                         </VBox.margin>
-                                                      </Button>
-                                                      <Button id="bpmMoreIncrease" fx:id="bpmMoreIncrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="+10" textAlignment="CENTER" wrapText="true">
-                                                         <font>
-                                                            <Font size="20.0" />
-                                                         </font>
-                                                         <padding>
-                                                            <Insets bottom="3.0" />
-                                                         </padding>
-                                                         <VBox.margin>
-                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                         </VBox.margin>
-                                                      </Button>
-                                                   </children>
-                                                </VBox>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </FlowPane>
-                                 </center>
-                                 <top>
-                                    <HBox BorderPane.alignment="CENTER">
-                                       <children>
-                                          <Label focusTraversable="false" text="Bits: ">
-                                             <font>
-                                                <Font size="19.0" />
-                                             </font>
-                                          </Label>
-                                          <ComboBox id="selectBeat" fx:id="selectNote" focusTraversable="false" promptText="0" />
-                                       </children>
-                                       <BorderPane.margin>
-                                          <Insets bottom="-20.0" left="5.0" top="5.0" />
-                                       </BorderPane.margin>
-                                    </HBox>
-                                 </top>
-                                 <right>
-                                    <VBox alignment="CENTER" rotate="180.0" BorderPane.alignment="CENTER">
-                                       <children>
-                                          <StackPane rotate="180.0">
-                                             <VBox.margin>
-                                                <Insets />
-                                             </VBox.margin>
-                                             <children>
-                                                <Label fx:id="timeSignatureBeat" alignment="CENTER" graphicTextGap="0.0" prefWidth="33.0" text="" textAlignment="CENTER">
-                                                   <font>
-                                                      <Font name="Bravura Text" size="72.0" />
-                                                   </font>
+																			<font>
+																				<Font size="20.0" />
+																			</font>
+																			<padding>
+																				<Insets bottom="3.0" />
+																			</padding>
+																			<VBox.margin>
+																				<Insets left="5.0" right="5.0" top="5.0" />
+																			</VBox.margin>
+																		</Button>
+																		<Button id="bpmIncrease" fx:id="bpmIncrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="+1" textAlignment="CENTER" wrapText="true">
+																			<font>
+																				<Font size="20.0" />
+																			</font>
+																			<padding>
+																				<Insets bottom="3.0" />
+																			</padding>
+																			<VBox.margin>
+																				<Insets left="5.0" right="5.0" top="5.0" />
+																			</VBox.margin>
+																		</Button>
+																		<Button id="bpmMoreIncrease" fx:id="bpmMoreIncrease" cache="true" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="+10" textAlignment="CENTER" wrapText="true">
+																			<font>
+																				<Font size="20.0" />
+																			</font>
+																			<padding>
+																				<Insets bottom="3.0" />
+																			</padding>
+																			<VBox.margin>
+																				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+																			</VBox.margin>
+																		</Button>
+																	</children>
+																</VBox>
+															</children>
+														</HBox>
+													</children>
+												</FlowPane>
+											</center>
+											<top>
+												<HBox BorderPane.alignment="CENTER">
+													<children>
+														<Label focusTraversable="false" text="Bits: ">
+															<font>
+																<Font size="19.0" />
+															</font>
+														</Label>
+														<ComboBox id="selectBeat" fx:id="selectNote" focusTraversable="false" promptText="0" />
+													</children>
+													<BorderPane.margin>
+														<Insets bottom="-20.0" left="5.0" top="5.0" />
+													</BorderPane.margin>
+												</HBox>
+											</top>
+											<right>
+												<VBox alignment="CENTER" rotate="180.0" BorderPane.alignment="CENTER">
+													<children>
+														<StackPane rotate="180.0">
+															<VBox.margin>
+																<Insets />
+															</VBox.margin>
+															<children>
+																<Label fx:id="timeSignatureBeat" alignment="CENTER" graphicTextGap="0.0" prefWidth="33.0" text="" textAlignment="CENTER">
+																	<font>
+																		<Font name="Bravura Text" size="72.0" />
+																	</font>
+																	<padding>
+																		<Insets bottom="-10.0" top="-30.0" />
+																	</padding>
+																</Label>
+																<Rectangle fx:id="beatClickJone" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="38.0" stroke="TRANSPARENT" strokeType="INSIDE" width="56.0" />
+															</children>
+														</StackPane>
+														<Label text="━" textAlignment="CENTER">
+															<VBox.margin>
+																<Insets left="15.0" right="20.0" />
+															</VBox.margin>
+															<font>
+																<Font size="30.0" />
+															</font>
+															<padding>
+																<Insets bottom="-15.0" top="-15.0" />
+															</padding>
+														</Label>
+														<StackPane rotate="180.0">
+															<children>
+																<Label fx:id="timeSignatureTime" alignment="CENTER" graphicTextGap="0.0" text="" textAlignment="CENTER">
+																	<font>
+																		<Font name="Bravura Text" size="72.0" />
+																	</font>
+																	<padding>
+																		<Insets bottom="-10.0" top="-30.0" />
+																	</padding>
+																</Label>
+																<Rectangle fx:id="timeClickJone" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="38.0" stroke="TRANSPARENT" strokeType="INSIDE" width="56.0" />
+															</children>
+														</StackPane>
+													</children>
+													<BorderPane.margin>
+														<Insets right="5.0" />
+													</BorderPane.margin>
+												</VBox>
+											</right>
+											<left>
+												<Label text="━" visible="false" BorderPane.alignment="CENTER">
+													<font>
+														<Font size="30.0" />
+													</font>
+													<BorderPane.margin>
+														<Insets left="25.0" right="15.0" />
+													</BorderPane.margin>
+												</Label>
+											</left>
+										</BorderPane>
+									</children>
+								</AnchorPane>
+								<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+									<children>
+										<SplitPane dividerPositions="0.5" focusTraversable="false" layoutX="176.0" layoutY="-52.0" orientation="VERTICAL" prefHeight="124.0" prefWidth="561.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+											<items>
+												<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+													<children>
+														<FlowPane alignment="CENTER" layoutX="180.0" layoutY="-94.0" prefHeight="58.0" prefWidth="559.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+															<children>
+																<HBox alignment="CENTER">
+																	<children>
+																		<Button id="-10" fx:id="offsetMoreDecrease" cache="true" contentDisplay="CENTER" ellipsisString="-10" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="-10" textAlignment="CENTER" wrapText="true">
+																			<font>
+																				<Font size="20.0" />
+																			</font>
+																			<padding>
+																				<Insets bottom="3.0" />
+																			</padding>
+																			<HBox.margin>
+																				<Insets right="5.0" />
+																			</HBox.margin>
+																		</Button>
+																		<Button id="-1" fx:id="offsetDecrease" cache="true" contentDisplay="CENTER" ellipsisString="-1" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="-1" textAlignment="CENTER" wrapText="true">
+																			<font>
+																				<Font size="20.0" />
+																			</font>
+																			<padding>
+																				<Insets bottom="3.0" />
+																			</padding>
+																			<HBox.margin>
+																				<Insets right="5.0" />
+																			</HBox.margin>
+																		</Button>
+																		<VBox alignment="CENTER">
+																			<children>
+																				<Label focusTraversable="false" text="offset:">
+																					<font>
+																						<Font size="15.0" />
+																					</font>
+																					<VBox.margin>
+																						<Insets bottom="-10.0" top="-10.0" />
+																					</VBox.margin>
+																				</Label>
+																				<Label id="offsetText" fx:id="offsetText" focusTraversable="false" text="0">
+																					<font>
+																						<Font size="30.0" />
+																					</font>
+																					<VBox.margin>
+																						<Insets />
+																					</VBox.margin>
+																				</Label>
+																			</children>
+																		</VBox>
+																		<Button id="+1" fx:id="offsetIncrease" cache="true" contentDisplay="CENTER" ellipsisString="+1" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="+1" textAlignment="CENTER" wrapText="true">
+																			<font>
+																				<Font size="20.0" />
+																			</font>
+																			<padding>
+																				<Insets bottom="3.0" />
+																			</padding>
+																			<HBox.margin>
+																				<Insets left="5.0" />
+																			</HBox.margin>
+																		</Button>
+																		<Button id="+10" fx:id="offsetMoreIncrease" cache="true" contentDisplay="CENTER" ellipsisString="+10" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="+10" textAlignment="CENTER" wrapText="true">
+																			<font>
+																				<Font size="20.0" />
+																			</font>
+																			<padding>
+																				<Insets bottom="3.0" />
+																			</padding>
+																			<HBox.margin>
+																				<Insets left="5.0" />
+																			</HBox.margin>
+																		</Button>
+																	</children>
+																</HBox>
+															</children>
+														</FlowPane>
+													</children>
+												</AnchorPane>
+												<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+													<children>
+														<BorderPane prefHeight="63.0" prefWidth="634.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+															<right>
+																<Slider id="volumeSlider" fx:id="volumeSlider" focusTraversable="false" minorTickCount="2" showTickLabels="true" showTickMarks="true" value="50.0" BorderPane.alignment="CENTER">
+																	<BorderPane.margin>
+																		<Insets right="5.0" />
+																	</BorderPane.margin>
+																</Slider>
+															</right>
+															<center>
+																<FlowPane alignment="CENTER" BorderPane.alignment="CENTER">
+																	<children>
+																		<Button fx:id="playSound" focusTraversable="false" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-radius: 20; -fx-background-color: #ff4d4d; -fx-border-color: #ff753f; -fx-border-radius: 20;" text="▶" textFill="WHITE">
+																			<FlowPane.margin>
+																				<Insets right="20.0" />
+																			</FlowPane.margin>
+																			<font>
+																				<Font size="22.0" />
+																			</font>
+																			<padding>
+																				<Insets bottom="-1.0" top="1.0" />
+																			</padding>
+																		</Button>
+																		<Button fx:id="stopSound" disable="true" focusTraversable="false" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-radius: 20; -fx-background-color: #ff4d4d; -fx-border-color: #ff753f; -fx-border-radius: 20;" text="■" textFill="WHITE">
+																			<font>
+																				<Font size="22.0" />
+																			</font>
+																			<padding>
+																				<Insets bottom="-1.0" top="1.0" />
+																			</padding>
+																		</Button>
+																	</children>
                                                    <padding>
-                                                      <Insets bottom="-10.0" top="-30.0" />
+                                                      <Insets left="145.0" />
                                                    </padding>
-                                                </Label>
-                                                <Rectangle fx:id="beatClickJone" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="38.0" stroke="TRANSPARENT" strokeType="INSIDE" width="56.0" />
-                                             </children>
-                                          </StackPane>
-                                          <Label text="━" textAlignment="CENTER">
-                                             <VBox.margin>
-                                                <Insets left="15.0" right="20.0" />
-                                             </VBox.margin>
-                                             <font>
-                                                <Font size="30.0" />
-                                             </font>
-                                             <padding>
-                                                <Insets bottom="-15.0" top="-15.0" />
-                                             </padding>
-                                          </Label>
-                                          <StackPane rotate="180.0">
-                                             <children>
-                                                <Label fx:id="timeSignatureTime" alignment="CENTER" graphicTextGap="0.0" text="" textAlignment="CENTER">
-                                                   <font>
-                                                      <Font name="Bravura Text" size="72.0" />
-                                                   </font>
-                                                   <padding>
-                                                      <Insets bottom="-10.0" top="-30.0" />
-                                                   </padding>
-                                                </Label>
-                                                <Rectangle fx:id="timeClickJone" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="38.0" stroke="TRANSPARENT" strokeType="INSIDE" width="56.0" />
-                                             </children>
-                                          </StackPane>
-                                       </children>
-                                       <BorderPane.margin>
-                                          <Insets right="5.0" />
-                                       </BorderPane.margin>
-                                    </VBox>
-                                 </right>
-                                 <left>
-                                    <Label text="━" visible="false" BorderPane.alignment="CENTER">
-                                       <font>
-                                          <Font size="30.0" />
-                                       </font>
-                                       <BorderPane.margin>
-                                          <Insets left="25.0" right="15.0" />
-                                       </BorderPane.margin>
-                                    </Label>
-                                 </left>
-                              </BorderPane>
-                           </children>
-                        </AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <SplitPane dividerPositions="0.5" focusTraversable="false" layoutX="176.0" layoutY="-52.0" orientation="VERTICAL" prefHeight="124.0" prefWidth="561.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                <items>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                       <children>
-                                          <FlowPane alignment="CENTER" layoutX="180.0" layoutY="-94.0" prefHeight="58.0" prefWidth="559.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <children>
-                                                <HBox alignment="CENTER">
-                                                   <children>
-                                                      <Button id="-10" fx:id="offsetMoreDecrease" cache="true" contentDisplay="CENTER" ellipsisString="-10" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="-10" textAlignment="CENTER" wrapText="true">
-                                                         <font>
-                                                            <Font size="20.0" />
-                                                         </font>
-                                                         <padding>
-                                                            <Insets bottom="3.0" />
-                                                         </padding>
-                                                         <HBox.margin>
-                                                            <Insets right="5.0" />
-                                                         </HBox.margin>
-                                                      </Button>
-                                                      <Button id="-1" fx:id="offsetDecrease" cache="true" contentDisplay="CENTER" ellipsisString="-1" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="-1" textAlignment="CENTER" wrapText="true">
-                                                         <font>
-                                                            <Font size="20.0" />
-                                                         </font>
-                                                         <padding>
-                                                            <Insets bottom="3.0" />
-                                                         </padding>
-                                                         <HBox.margin>
-                                                            <Insets right="5.0" />
-                                                         </HBox.margin>
-                                                      </Button>
-                                                      <VBox alignment="CENTER">
-                                                         <children>
-                                                            <Label focusTraversable="false" text="offset:">
-                                                               <font>
-                                                                  <Font size="15.0" />
-                                                               </font>
-                                                               <VBox.margin>
-                                                                  <Insets bottom="-10.0" top="-10.0" />
-                                                               </VBox.margin>
-                                                            </Label>
-                                                            <Label id="offsetText" fx:id="offsetText" focusTraversable="false" text="0">
-                                                               <font>
-                                                                  <Font size="30.0" />
-                                                               </font>
-                                                               <VBox.margin>
-                                                                  <Insets />
-                                                               </VBox.margin>
-                                                            </Label>
-                                                         </children>
-                                                      </VBox>
-                                                      <Button id="+1" fx:id="offsetIncrease" cache="true" contentDisplay="CENTER" ellipsisString="+1" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="+1" textAlignment="CENTER" wrapText="true">
-                                                         <font>
-                                                            <Font size="20.0" />
-                                                         </font>
-                                                         <padding>
-                                                            <Insets bottom="3.0" />
-                                                         </padding>
-                                                         <HBox.margin>
-                                                            <Insets left="5.0" />
-                                                         </HBox.margin>
-                                                      </Button>
-                                                      <Button id="+10" fx:id="offsetMoreIncrease" cache="true" contentDisplay="CENTER" ellipsisString="+10" focusTraversable="false" mnemonicParsing="false" prefWidth="55.0" style="-fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #e1e1e1;" text="+10" textAlignment="CENTER" wrapText="true">
-                                                         <font>
-                                                            <Font size="20.0" />
-                                                         </font>
-                                                         <padding>
-                                                            <Insets bottom="3.0" />
-                                                         </padding>
-                                                         <HBox.margin>
-                                                            <Insets left="5.0" />
-                                                         </HBox.margin>
-                                                      </Button>
-                                                   </children>
-                                                </HBox>
-                                             </children>
-                                          </FlowPane>
-                                       </children>
-                                    </AnchorPane>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                       <children>
-                                          <BorderPane prefHeight="63.0" prefWidth="634.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <right>
-                                                <Slider id="volumeSlider" fx:id="volumeSlider" focusTraversable="false" minorTickCount="2" showTickLabels="true" showTickMarks="true" value="50.0" BorderPane.alignment="CENTER">
-                                                   <BorderPane.margin>
-                                                      <Insets left="-145.0" right="5.0" />
-                                                   </BorderPane.margin>
-                                                </Slider>
-                                             </right>
-                                             <center>
-                                                <FlowPane alignment="CENTER" BorderPane.alignment="CENTER">
-                                                   <children>
-                                                      <Button fx:id="playSound" focusTraversable="false" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-radius: 20; -fx-background-color: #ff4d4d; -fx-border-color: #ff753f; -fx-border-radius: 20;" text="▶" textFill="WHITE">
-                                                         <FlowPane.margin>
-                                                            <Insets right="20.0" />
-                                                         </FlowPane.margin>
-                                                         <font>
-                                                            <Font size="22.0" />
-                                                         </font>
-                                                         <padding>
-                                                            <Insets bottom="-1.0" top="1.0" />
-                                                         </padding>
-                                                      </Button>
-                                                      <Button fx:id="stopSound" disable="true" focusTraversable="false" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-radius: 20; -fx-background-color: #ff4d4d; -fx-border-color: #ff753f; -fx-border-radius: 20;" text="■" textFill="WHITE">
-                                                         <font>
-                                                            <Font size="22.0" />
-                                                         </font>
-                                                         <padding>
-                                                            <Insets bottom="-1.0" top="1.0" />
-                                                         </padding>
-                                                      </Button>
-                                                   </children>
-                                                </FlowPane>
-                                             </center>
-                                          </BorderPane>
-                                       </children>
-                                    </AnchorPane>
-                                </items>
-                              </SplitPane>
-                           </children></AnchorPane>
-                    </items>
-                  </SplitPane>
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
-   </children>
+																</FlowPane>
+															</center>
+														</BorderPane>
+													</children>
+												</AnchorPane>
+											</items>
+										</SplitPane>
+									</children>
+								</AnchorPane>
+							</items>
+						</SplitPane>
+					</children>
+				</AnchorPane>
+			</items>
+		</SplitPane>
+	</children>
 </AnchorPane>
