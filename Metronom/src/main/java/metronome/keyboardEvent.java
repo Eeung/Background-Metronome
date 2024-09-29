@@ -51,7 +51,11 @@ public class keyboardEvent implements GlobalKeyListener {
 			if(checkKeyCommand( Settings.getQuickOffsetSetting() )) {	
 				long current = System.currentTimeMillis();
 				Platform.runLater(() -> offsetText.setText(Long.toString(current-root.getStartTime())) );
-				player.setOffset( (int)(current-root.getStartTime()) );
+				
+				int newOffset = (int)(current-root.getStartTime());
+				player.setOffset(newOffset);
+				/** 세팅클래스 동기화 */
+				Settings.setOffset(newOffset);
 			}/** 종료버튼(ESC) */
 			else if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {
 				stopSound.fire();
