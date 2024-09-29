@@ -41,4 +41,4 @@
 ##### 외부 라이브러리 참조
 
 + 백그라운드 키보드 후킹 : https://github.com/kristian/system-hook
-+ 아이콘 저작권 : <a href="https://www.flaticon.com/kr/free-icons/" title="속도 아이콘">속도 아이콘 제작자: Freepik - Flaticon</a>
++ 아이콘 저작권 : <a href="https://www.flaticon.com/kr/free-icon/metronome_5976674" title="속도 아이콘">속도 아이콘 제작자: Freepik - Flaticon</a>
