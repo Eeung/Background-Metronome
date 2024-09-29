@@ -27,7 +27,7 @@ public class Main extends Application {
 		
 		controller.setStage(primaryStage);
 
-		primaryStage.getIcons().add(new Image("file:src/main/resources/Icon/metronome_32px.png"));
+		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/Icon/metronome_32px.png")));
 		primaryStage.setTitle("메트로놈"); 
 		primaryStage.setScene(scene);
 		primaryStage.show(); // 창 띄우기

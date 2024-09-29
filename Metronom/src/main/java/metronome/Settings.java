@@ -11,15 +11,16 @@ public class Settings {
 	private static Properties prop = new Properties();
 	
 	//세팅 기본값
+	private static String filePath = "Setting.properties";
 	
 	private static int bpm = 12000;
 	
 	private static int offset = 0;
 	
-	private static Integer note = 8;
+	private static Integer note = 4;
 	
 	private static long accentBeat = 
-			0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000011L;
+			0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001L;
 	
 	private static int volume = 50;
 	
@@ -37,7 +38,7 @@ public class Settings {
 	
 	/** 세팅 파일에서 저장된 값을 불러오기 */
 	public static void getSettingsFromFile() {
-		try (FileInputStream input = new FileInputStream("src/main/resources/Setting.properties")) {
+		try (FileInputStream input = new FileInputStream(filePath)) {
 		    prop.load(input);
 		    bpm = Integer.parseInt(prop.getProperty("bpm"));
 		    offset = Integer.parseInt(prop.getProperty("offset"));
@@ -50,14 +51,14 @@ public class Settings {
 		    
 		    quickOffsetSetting = asList( prop.getProperty("quickOffsetSetting") );
 		    quickOffsetSettingString = prop.getProperty("quickOffsetSettingString");
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 		    ex.printStackTrace();
 		}
 	}
 	
 	/** 프로그램의 지금 설정을 세팅 파일에 저장하기 */
 	public static void setSettingFile() {
-		try (FileOutputStream output = new FileOutputStream("src/main/resources/Setting.properties")) {
+		try (FileOutputStream output = new FileOutputStream(filePath)) {
 		    prop.setProperty("bpm", Integer.toString(bpm) );
 		    prop.setProperty("offset", Integer.toString(offset));
 		    prop.setProperty("note", Integer.toString(note) );
