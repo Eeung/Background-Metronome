@@ -3,6 +3,7 @@ package metronome.components.actions;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import metronome.Controller;
+import metronome.Settings;
 import metronome.sound.MusicStrategy;
 
 public class VolumeSetting {
@@ -10,12 +11,11 @@ public class VolumeSetting {
 	
 	private static MusicStrategy player = root.getPlayer();
 	
-	/** Get event instances of volume slider. */
 	public static volume getSliderEvnet() {
 		return new volume();
 	}
 
-	/** The event to control volume with slider */
+	/** 볼륨 슬라이더를 담당하는 이벤트 클래스 */
 	private static class volume implements ChangeListener<Number> {
 		
 		@Override
@@ -24,6 +24,8 @@ public class VolumeSetting {
 			
 			player.setVolume(result);
 			
+			/** 세팅클래스 동기화 */
+			Settings.setVolume(result);
 			//System.out.println("Volume Value Changed: " + result);
 		}
 	}

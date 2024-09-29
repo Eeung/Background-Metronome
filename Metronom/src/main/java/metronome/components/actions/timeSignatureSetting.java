@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import metronome.CircularList;
 import metronome.Controller;
+import metronome.Settings;
 import metronome.sound.MetronomeStrategy;
 
 public class timeSignatureSetting {
@@ -14,32 +15,24 @@ public class timeSignatureSetting {
 	
 	private static MetronomeStrategy player = (MetronomeStrategy) root.getPlayer();
 	
-	/** Get the event of selecting the numerator of the time signature. */
-	public static signature getTimeSignatureEvent(int id, String[] integers) {
-		return new signature(id, integers);
-	}
-	/** Get the event of selecting the denominator of the time signature. */
-	public static signature getTimeSignatureEvent(int id, String[] integers, int startIdx) {
-		return new signature(id, integers, startIdx);
+	public static signature getTimeSignatureEvent(int id, String[] integers, String start) {
+		return new signature(id, integers, start);
 	}
 	
-	/** The event of adjusting the time signature */
+	/** 박자표 조정을 위한 이벤트 클래스 */
 	private static class signature implements EventHandler<MouseEvent> {
 		private CircularList<String> list;
 		private Label timeSignaturePart;
 		private final int id;
 		
-		public signature(int id, String[] arr) {
-			this(id,arr,0);
-		}
-		public signature(int id, String[] arr, int startIdx) {
+		public signature(int id, String[] arr, String start) {
 			list = new CircularList<String>(arr);
 			switch(id) {
-			case NUMERATOR -> timeSignaturePart = root.getTimeSignatureTime();
-			case DENOMINATOR -> timeSignaturePart = root.getTimeSignatureBeat();
+			case NUMERATOR -> timeSignaturePart = root.getTimeSignatureTime();//분자
+			case DENOMINATOR -> timeSignaturePart = root.getTimeSignatureBeat();//분모
 			}
 			this.id = id;
-			list.get(startIdx);
+			list.get(list.indexOf(start));
 		}
 		
 		@Override
@@ -75,8 +68,18 @@ public class timeSignatureSetting {
 			indicatorSetting.rebuildIndicator(beatCount);
 			
 			switch(id) {
-			case 0 -> player.setTime( root.getBuravuraValue(value) );
-			case 1 -> player.setBeat( root.getBuravuraValue(value) );
+			case 0 -> {
+				int time = root.getBuravuraValue(value);
+				player.setTime(time);
+				/** 세팅클래스 동기화 */
+				Settings.setTime(time);
+			}
+			case 1 -> {
+				int beat = root.getBuravuraValue(value);
+				player.setBeat(beat);
+				/** 세팅클래스 동기화 */
+				Settings.setBeat(beat);
+			}
 			}
 		}
 	}

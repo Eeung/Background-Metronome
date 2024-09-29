@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import metronome.Controller;
+import metronome.Settings;
 import metronome.sound.MetronomeStrategy;
 
 public class bpmSetting {
@@ -18,16 +19,14 @@ public class bpmSetting {
 	private static Slider bpmSlider = root.getBpmSlider();
 	private static MetronomeStrategy player = (MetronomeStrategy) root.getPlayer();
 	
-	/** Get event instances of bpm increase/decrease buttons. */
 	public static bpmChange getButtonEvent(Button bpmButton) {
 		return new bpmChange(bpmButton);
 	}
-	/** Get event instances of bpm slider. */
 	public static sliderEvent getSliderEvent(Slider slider) {
 		return new sliderEvent(slider);
 	}
 	
-	/** The event that Bpm is increased or decreased */
+	/** bpm 증감 버튼의 이벤트를 담당하는 클래스 */
 	private static class bpmChange implements EventHandler<MouseEvent>{
 		private Button bpmChange;
 		
@@ -45,11 +44,11 @@ public class bpmSetting {
 			bpm += weight;
 			bpm = rangeCheck(bpm, 1, 100000);
 			
-			/** Convert bpm from int to float text */
+			/** bpm값을 소수형태의 문자열로 바꾸는 작업 */
 			StringBuilder sb = new StringBuilder();
 			sb.append( bpm/100 );
 			int remain = bpm%100;
-			/** decimal places */
+			//소수부분
 			if(remain>0) {
 				double num = remain/100.0;
 				String str = Double.toString(num);
@@ -60,21 +59,26 @@ public class bpmSetting {
 			player.setBpm(bpm/100.0);
 			bpmText.setText( sb.toString() );
 			
-			/** Synchronizing Bpm and bpmSlider*/
+			/** bpm슬라이더와 동기화 */
 			bpmSlider.setValue(bpm/100.0);
+			
+			/** 세팅클래스 동기화 */
+			Settings.setBpm(bpm);
+			
 		}
-		
 		private int rangeCheck(int target, int min, int max) {
-			target = target<min ? min : target;
-			target = target>max ? max : target;
-			return target;
+			return Math.max(1, Math.min(target, 100000));
 		}
-		
 	}
 
-	/** The event to control Bpm with slider */
+	/** bpm을 조절하는 슬라이더의 이벤트 클래스 */
 	private static class sliderEvent implements ChangeListener<Number> {
 		private Slider bpmSlider;
+		
+		sliderEvent(Slider slider) {
+			bpmSlider = slider;
+		}
+		
 		@Override
 		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 			if(!(bpmSlider.isValueChanging() || bpmSlider.isHover()) ) return;
@@ -85,11 +89,10 @@ public class bpmSetting {
 			player.setBpm(result);
 			bpmText.setText( Integer.toString(result) );
 			
+			/** 세팅클래스 동기화 */
+			Settings.setBpm(result*100);
+			
 			//System.out.println("Slider Value Changed: " + result);
-		}
-
-		sliderEvent(Slider slider) {
-			bpmSlider = slider;
 		}
 	}
 	

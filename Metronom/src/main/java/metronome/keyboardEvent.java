@@ -1,5 +1,7 @@
 package metronome;
 
+import java.util.List;
+
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,18 +21,19 @@ public class keyboardEvent implements GlobalKeyListener {
 	private Button stopSound = root.getStopSound();
 	private MusicStrategy player = root.getPlayer();
 	
-	/** The pressed status of each Key */
+	/** 누른 키를 각 키코드에 해당되는 인덱스에 저장하기 위한 배열 */
 	private boolean[] keyPressed = new boolean[255];
-	/** Adjusted state of the increase/decrease buttons */
+	/** 증감치 조정키를 누른 여부를 저장하는 변수 */
 	private boolean isAdjusted = false;
 	
 	@Override 
 	public void keyPressed(GlobalKeyEvent e) {
-		//System.out.println(e);
 		if(keyPressed[e.getVirtualKeyCode()]) return;
+		keyPressed[e.getVirtualKeyCode()] = true;
+		System.out.println(e);
 		
-		/** When you press Shift key, increase/decrease buttons will be adjusted */
-		if(root.isFocused() && e.isShiftPressed()) {
+		/** 창 포커스 상태이며, 증감치 조정 버튼을 누르면 bpm과 offset버튼들의 값이 바뀜 */
+		if(root.isFocused() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_LSHIFT) {
 			isAdjusted = true;
 			for (int i=0;i<4;i++) {
 				final int idx = i;
@@ -42,35 +45,33 @@ public class keyboardEvent implements GlobalKeyListener {
 				});
 			}
 		}
-		/** When sound is playing */
+		/** 재생 도중 */
 		if(root.isPlayed()) {
-			/** Press "Ctrl + \" to set the offset minus the time when pressed and the time stored at playback. */
-			if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_OEM_5) {	
+			/** 빠른 오프셋 조정 키 조합을 입력하면, 매트로놈 시작시간과 누른 시간의 차가 오프셋이 됨. */
+			if(checkKeyCommand( Settings.getQuickOffsetSetting() )) {	
 				long current = System.currentTimeMillis();
 				Platform.runLater(() -> offsetText.setText(Long.toString(current-root.getStartTime())) );
 				player.setOffset( (int)(current-root.getStartTime()) );
-			}/** Press Escape key to stop sound */
+			}/** 종료버튼(ESC) */
 			else if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {
 				stopSound.fire();
-			} /** Press F5 key to restart sound by subtracting it from the offset for the specified time. */
+			} /** 빠른 리트라이 버튼(F5)을 누르면 매트로놈도 재시작함. */
 			else if(e.getVirtualKeyCode() == GlobalKeyEvent.VK_F5) {
 				stopSound.fire();
-				player.activateFastRetry();
+				player.activateFastRetry( root.getGame() );
 				playSound.fire();
 			}
 		} else {
-			/** Press "Ctrl + Enter" to start sound */
+			/** 매트로놈 재생 키 조합을 입력하면, 매트로놈 재생됨. */
 			if(e.isControlPressed() && e.getVirtualKeyCode() == GlobalKeyEvent.VK_RETURN) {
 				playSound.fire();
 			}
 		}
-		
-		keyPressed[e.getVirtualKeyCode()] = true;
 	}
 	
 	@Override 
 	public void keyReleased(GlobalKeyEvent e) {
-		/** When you release Shift Key, the values of the increase/decrease buttons are returned */
+		/** 증감치 조정키를 때면, 버튼들의 값이 되돌아옴. */
 		if(isAdjusted && e.getVirtualKeyCode() == GlobalKeyEvent.VK_LSHIFT) {
 			isAdjusted = false;
 			for (int i=0;i<4;i++) {
@@ -84,6 +85,13 @@ public class keyboardEvent implements GlobalKeyListener {
 		}
 		
 		keyPressed[e.getVirtualKeyCode()] = false;
+	}
+	
+	private boolean checkKeyCommand(List<Integer> command) {
+		for(int keycode : command)
+			if(!keyPressed[keycode])
+				return false;
+		return true;
 	}
 	
 	//Singleton Pattern

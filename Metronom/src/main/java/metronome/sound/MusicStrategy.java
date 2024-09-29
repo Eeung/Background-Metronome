@@ -5,5 +5,5 @@ public interface MusicStrategy {
 	void stop();
 	void setOffset(int offset);
 	void setVolume(int vol);
-	void activateFastRetry();
+	void activateFastRetry(String name);
 }

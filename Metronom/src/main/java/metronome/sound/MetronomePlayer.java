@@ -8,23 +8,24 @@ import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.scene.shape.Circle;
 import metronome.Controller;
+import metronome.Settings;
 
 public class MetronomePlayer implements MetronomeStrategy {
 	private static Controller root;
 	
-	private double bpm=120;
-	private int offset = 0;
-	/** Store previous offset value. */
+	private double bpm = Settings.getBpm()/100.0;
+	private int offset = Settings.getOffset();
+	/** 이전 오프셋을 저장 */
 	private int pre_offset = Integer.MIN_VALUE;
 
-	/** If you use the Quick Restart feature, it reduces the offset by a predetermined amount. */
+	/** 빠른 재시작 시, 미리 정해진 만큼의 오프셋만큼 빠짐 */
 	private int fast_retry = 0;
 	private int beat_sequence = 0, beat_count = -1;
-	private int note, beat=4, time=4;
+	private int note, time=Settings.getTime(), beat=Settings.getBeat();
 	
 	private ScheduledExecutorService beatExecutor = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledFuture<?> beatScheduled;
-	/** The function of playing beat sound. */
+	/** 비트 한 번을 재생하는 클래스 */
 	private Runnable runnable;
 	private static TickTock TickTock = new TickTock();
 	
@@ -34,7 +35,7 @@ public class MetronomePlayer implements MetronomeStrategy {
 	public void play() {
 		if(bpm<0) return;
 		root = Controller.getInstance();
-		/** The Delay of between each beat sound. */
+		/** 각각의 틱 사이에 걸리는 딜레이를 나노세컨드 단위로 설정 */
 		long nanoPeriod = (long) (60_000_000_000L/(bpm* note/beat ));
 		
 		runnable = () -> {
@@ -43,7 +44,7 @@ public class MetronomePlayer implements MetronomeStrategy {
 			Platform.runLater( () -> indicator[beat_sequence++].requestFocus() );
 		};
 		
-		/** (runnable function, delay before starting, interval, time unit) */
+		/** (runnable 함수, 선딜, 간격, 시간 단위) */
 		beatScheduled = beatExecutor.scheduleAtFixedRate(
 				runnable, (offset-fast_retry)*1_000_000L, nanoPeriod, TimeUnit.NANOSECONDS);
 		
@@ -52,7 +53,7 @@ public class MetronomePlayer implements MetronomeStrategy {
 		offset = 0;
 	}
 	
-	/** Cancel the schedule that play sound at regular intervals. */
+	/** 소리 중지 */
 	@Override
 	public void stop() {
 		beatScheduled.cancel(true);
@@ -62,7 +63,7 @@ public class MetronomePlayer implements MetronomeStrategy {
 		System.out.println("종료 됨!");
 	}
 	
-	/** Reset the interval when you change value(bpm, offset, note or beat) */
+	/** 특정 값(bpm, offset, note or beat)들이 바꼈을 때, 간격 재 설정 */
 	private void restart() {
 		long nanoPeriod = (long) (60_000_000_000L/(bpm* note/beat ));	//바뀐 bpm에 따라 간격 구하기
 		
@@ -109,7 +110,7 @@ public class MetronomePlayer implements MetronomeStrategy {
 		setBeatCount();
 		//매트로놈 중간에 비트를 바꿀 때,
 		if(beatScheduled != null) {
-			/** if beat_sequence is bigger than beat_count, it becomes 0. Or 1 */
+			/** 현재 비트 번호가 비트 수보다 클 때, 0이 되고 아니면 1이 됨 */
 			int zeroOrOne = ((beat_sequence - beat_count) >> 31) & 1;
 			beat_sequence *= zeroOrOne;
 			indicator[beat_sequence-zeroOrOne].requestFocus();
@@ -123,7 +124,7 @@ public class MetronomePlayer implements MetronomeStrategy {
 		setBeatCount();
 		//매트로놈 중간에 비트를 바꿀 때,
 		if(beatScheduled != null) {
-			/** if beat_sequence is bigger than beat_count, it becomes 0. Or 1 */
+			/** 현재 비트 번호가 비트 수보다 클 때, 0이 되고 아니면 1이 됨 */
 			int zeroOrOne = ((beat_sequence - beat_count) >> 31) & 1;
 			beat_sequence *= zeroOrOne;
 			indicator[beat_sequence-zeroOrOne].requestFocus();
@@ -137,7 +138,7 @@ public class MetronomePlayer implements MetronomeStrategy {
 		setBeatCount();
 		//매트로놈 중간에 비트를 바꿀 때,
 		if(beatScheduled != null) {
-			/** if beat_sequence is bigger than beat_count, it becomes 0. Or 1 */
+			/** 현재 비트 번호가 비트 수보다 클 때, 0이 되고 아니면 1이 됨 */
 			int zeroOrOne = ((beat_sequence - beat_count) >> 31) & 1;
 			beat_sequence *= zeroOrOne;
 			indicator[beat_sequence-zeroOrOne].requestFocus();
@@ -156,8 +157,12 @@ public class MetronomePlayer implements MetronomeStrategy {
 	}
 	
 	@Override
-	public void activateFastRetry() {
-		fast_retry = 1000;
+	public void activateFastRetry(String name) {
+		switch(name) {
+		case "djmax" -> fast_retry = 1000;
+		default -> fast_retry = 0;
+		}
+		
 	}
 	
 	//Singleton Pattern

@@ -3,6 +3,7 @@ package metronome.components.actions;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import metronome.Controller;
+import metronome.Settings;
 import metronome.sound.MetronomeStrategy;
 
 public class noteSetting  {
@@ -10,12 +11,11 @@ public class noteSetting  {
 	
 	private static MetronomeStrategy player = (MetronomeStrategy) root.getPlayer();
 	
-	/** Get the event to select musical note */
 	public static select getBeatSelectEvent() {
 		return select.getInstance();
 	}
 	
-	/** The event to select musical note */
+	/** 비트(note)를 선택하는 이벤트 클래스 */
 	private static class select implements ChangeListener<Integer> {
 		
 		@Override
@@ -28,6 +28,10 @@ public class noteSetting  {
 			
 			indicatorSetting.rebuildIndicator(beatCount);
 			player.setNote(newValue);
+			
+			/** 세팅 클래스와 동기화 */
+			Settings.setNote(newValue);
+			
 		}
 		
 		//Singleton Pattern

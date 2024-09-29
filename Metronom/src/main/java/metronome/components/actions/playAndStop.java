@@ -16,22 +16,21 @@ public class playAndStop {
 	private static VBox indicatorCol = root.getIndicatorCol();
 	private static MusicStrategy player = root.getPlayer();
 
-	/** Get the event to play sound. */
 	public static play getPlay() {
 		return play.getInstance();
 	}
-
-	/** Get the event to stop sound. */
 	public static stop getStop() {
 		return stop.getInstance();
 	}
 	
-	/** The event to play sound */
+	/** 재생 이벤트 */
 	private static class play implements EventHandler<ActionEvent>{
 		@Override
 		public void handle(ActionEvent arg0) {			
 			playSound.setDisable(true);
 			stopSound.setDisable(false);
+			
+			player.setOffset( Integer.parseInt(root.getOffsetText().getText()) );
 			
 			player.play();
 			root.setPlayed(true);
@@ -45,7 +44,7 @@ public class playAndStop {
 		}
 	}
 
-	/** The event to stop sound */
+	/** 중지 이벤트 */
 	private static class stop implements EventHandler<ActionEvent>{
 		@Override
 		public void handle(ActionEvent arg0) {

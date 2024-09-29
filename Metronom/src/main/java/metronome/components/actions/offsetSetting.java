@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import metronome.Controller;
+import metronome.Settings;
 import metronome.sound.MusicStrategy;
 
 public class offsetSetting {
@@ -24,12 +25,11 @@ public class offsetSetting {
 	public static final int MorerIncrease = 100;
 	public static final int MorestIncrease = 1000;
 	
-	/** Get event instances of offset increase/decrease buttons. */
 	public static offsetChange getButtonEvent(int mode) {
 		return new offsetChange(mode);
 	}
 	
-	/** The event that offset is increased or decreased */
+	/** 오프셋 증감버튼의 이벤트를 담당하는 클래스 */
 	private static class offsetChange implements EventHandler<MouseEvent>{
 		private Button offsetChange;
 		private int step;
@@ -63,6 +63,10 @@ public class offsetSetting {
 			
 			Platform.runLater(() -> offsetText.setText( Integer.toString(result) ) );
 			player.setOffset(offset);
+			
+			/** 세팅 클래스와 동기화 */
+			Settings.setOffset(offset);
+			
 		}
 		
 		private int rangeCheck(int target, int min, int max) {

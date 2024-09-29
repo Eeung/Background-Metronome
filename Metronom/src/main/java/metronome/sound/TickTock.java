@@ -3,6 +3,7 @@ package metronome.sound;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.AudioClip;
+import metronome.Settings;
 
 public class TickTock{
 	private AudioClip normalBeat, accentBeat;
@@ -14,7 +15,12 @@ public class TickTock{
             
         accentBeat = new AudioClip(getClass().getResource(accentBeatFile).toString());
         normalBeat = new AudioClip(getClass().getResource(normalBeatFile).toString());
-        setVolume(50);
+        /** 소리 불러오기 */
+        setVolume(0);
+        play(true);
+        play(false);
+        
+        setVolume( Settings.getVolume() );
 	}
 	
 	public void play(boolean isAccent) {
